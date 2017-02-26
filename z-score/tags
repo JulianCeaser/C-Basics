@@ -1,0 +1,14 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+A	zscore.c	/^float *A;$/;"	v
+N	zscore.c	10;"	d	file:
+Z	zscore.c	/^float *Z;$/;"	v
+compute_mean	zscore.c	/^double compute_mean(float *A,int n)$/;"	f
+compute_sample_var	zscore.c	/^double compute_sample_var(double mean,float	*A,	int	n)$/;"	f
+main	zscore.c	/^void main(int argc,	char** argv)$/;"	f
+merge	zscore.c	/^void merge (float *A, int a, float *B, int b, float	*C)$/;"	f
+merge_sort	zscore.c	/^void merge_sort(float *A, int n)$/;"	f

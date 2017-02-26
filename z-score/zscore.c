@@ -7,7 +7,10 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define	N 10
+#define	N 1000000
+
+float *A;
+float *Z;
 
 //************************************************************
 // merge()
@@ -166,7 +169,7 @@ void main(int argc,	char** argv)
 	}
 	fclose(f);
 	
-	printf("\nNumcount = %d\n",numcount);
+	//printf("\nNumcount = %d\n",numcount);
 
 	//Compute	mean, sample variance for the array
 	mean = compute_mean(A,n);
@@ -184,7 +187,7 @@ void main(int argc,	char** argv)
 	printf("The input	array is: ");
 	for (i = 0; i	< n; i++) 
 	{
-		printf("%.2f ", A[i]);
+		printf("%f ", A[i]);
 	}
 	printf("\n");
 
@@ -192,7 +195,7 @@ void main(int argc,	char** argv)
 	printf("The Z-score array	is:	");
 	for (i = 0; i	< n; i++) 
 	{
-		printf("%.2f ", Z[i]);
+		printf("%f ", Z[i]);
 	}
 	printf("\n");
 
