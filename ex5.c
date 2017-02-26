@@ -2,6 +2,8 @@
 
 int lst[] = {10, 9, 8, 4, 5, 6, 7, 3, 2, 1};
 
+#define COUNTER 125
+
 void merge(int * lst, int a, int b, int s)
 {
 	int tmp[10], ti = a, ai = a, bi = b;
@@ -27,7 +29,7 @@ void mergesort(int * lst, int a, int b)
 	merge(lst, a, a + (b-a)/2, b);
 }
 
-int main()
+int main(int argc, char **argv)
 {
 	int i;
 	mergesort(lst, 0, 10);

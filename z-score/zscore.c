@@ -68,8 +68,8 @@ void merge_sort(float *A, int n)
 
 	n1 = n / 2;
 	n2 = n - n1;
-	A1 = (float*)malloc(sizeof(float)	* n1);
-	A2 = (float*)malloc(sizeof(float)	* n2);
+	A1 = (float*)malloc(sizeof(float)* n1);
+	A2 = (float*)malloc(sizeof(float)* n2);
 
 	/* move the first	n/2	elements to	A1 */
 	for (i =0; i < n1; i++)
@@ -114,7 +114,7 @@ double compute_mean(float *A,int n)
 //Compute Sample Variance
 //***********************************
 
-double compute_sample_var(double mean,float	*A,	int	n)
+double compute_sample_var(double mean,float *A,	int n)
 {
 	double sample_var	= 0.0;
 	int i;
@@ -161,7 +161,7 @@ void main(int argc,	char** argv)
 
 
 	while(i < n)
-	//while((c=fgetc(f)) != EOF)
+	//while((c=getc(f)) != EOF)
 	{
 		fscanf(f, "%f,", &num);
 		A[i++] = num;
@@ -206,7 +206,7 @@ void main(int argc,	char** argv)
 	printf("The sorted array is: ");
 	for (i = 0; i	< n; i++) 
 	{
-		printf("%.2f ", A[i]);
+		printf("%f ", A[i]);
 	}
 	printf("\n");
 

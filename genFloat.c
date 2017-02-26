@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-# define MAX_FLOATS  100
+# define MAX_FLOATS  1000000
 
 
 
