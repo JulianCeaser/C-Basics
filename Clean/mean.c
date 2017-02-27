@@ -5,28 +5,28 @@
 
 double compute_mean(float *A,int n)
 {
-	double mean=0.0;
-	int i;
+     double mean=0.0;
+     int i;
 
-	//Loop to	compute	mean
+     //Loop to     compute     mean
 
-	for (i=0;i<n;i++)
-	mean =	mean + (A[i] / n);
+     for (i=0;i<n;i++)
+     mean =     mean + (A[i] / n);
 
-	return(mean);
+     return(mean);
 }
 
 //***********************************
 //Compute Sample Variance
 //***********************************
 
-double compute_sample_var(double mean,float *A,	int n)
+double compute_sample_var(double mean,float *A,     int n)
 {
-	double sample_var	= 0.0;
-	int i;
+     double sample_var     = 0.0;
+     int i;
 
-	for (i=0;i<n;i++)
-	sample_var	= sample_var + pow((A[i] - mean), 2.0) / ( n - 1);
+     for (i=0;i<n;i++)
+     sample_var     = sample_var + pow((A[i] - mean), 2.0) / ( n - 1);
 
-	return (sample_var);
+     return (sample_var);
 }
