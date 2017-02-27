@@ -1,18 +1,6 @@
 /*
  * Filename:    getfloat.c
- * Author:      Thomas van der Burgt <thomas@thvdburgt.nl>
- * Date:        01-MAR-2010
  *
- * The C Programming Language, second edition,
- * by Brian Kernighan and Dennis Ritchie
- *
- * Exercise 5-2, page 97
- *
- * Write getfloat, the floating-point analog of getint. What type does
- * getfloat return as its function value?
- *
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- * The function returns an int
  */
 
 #include <stdio.h>

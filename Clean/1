@@ -2,11 +2,9 @@
 #include <stdio.h>
 #define EXIT_FAILURE 1
 #include "mean.h"
-#include "getFloat.h"
+
 
 FILE *lst;
-float *floatList;
-
 
 #define COUNTER 125
 //extern FILE* openFile(char* fileName, char* mode);
@@ -62,12 +60,12 @@ int main(int argc, char **argv)
      FILE *fp,*fout;
      char output_file[] = "output.txt";
 
-     floatList = (float*)malloc(COUNTER*sizeof(float));
+     float *lst = (float*)malloc(sizeof(float)*COUNTER);
      
 
      while ((c=getc(fp)) != EOF)
      {
-          floatList[i] = getfloat(fp);
+          lst[i] = getfloat(fp);
           fout = openFile(output_file,"w"); 
           mean+=lst[i];
           if (i >= 125)
