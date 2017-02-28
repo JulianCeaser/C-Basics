@@ -9,18 +9,18 @@
 
 
 #define FLOATSIZE   4   
-#define BUFFSIZE 102400     //can hold 102400/4 = 25,600 (4 byte) floating point numbers
-
+#define BUFFSIZE 512     //can hold 102400/4 = 25,600 (4 byte) floating point numbers
 
 FILE *lst;
-float *floatList;
+float *floatList,*zscorelist;
 
 #define COUNTER 125
 //extern FILE* openFile(char* fileName, char* mode);
 
-void merge(int * lst, int a, int b, int s)
+void merge(float * lst, int a, int b, int s)
 {
-     int tmp[10], ti = a, ai = a, bi = b;
+    float tmp[s];
+    int ti = a, ai = a, bi = b;
      while ((ai < b) || (bi < s))
      {
           if (bi == s)
@@ -37,7 +37,7 @@ void merge(int * lst, int a, int b, int s)
           lst[ti] = tmp[ti];
 }
 
-void mergesort(int * lst, int a, int b)
+void mergesort(float * lst, int a, int b)
 {
      if (b-a < 2)
           return;
@@ -48,7 +48,7 @@ void mergesort(int * lst, int a, int b)
 }
 
 
-
+/*
 
 FILE* openFile(char* fileName, char* mode)
  {
@@ -61,7 +61,92 @@ FILE* openFile(char* fileName, char* mode)
      return fp; 
  }
 
+ */
 
+int main(int argc, char **argv)
+{
+    FILE *fp;
+    double var;
+    int i=0,size;
+    float mean;
+
+    fp = fopen(argv[1],"r");
+    if ( fp == NULL)
+    {
+        printf("\nUnable to open input file");
+        exit(1);
+    }
+    
+    floatList = (float *)malloc(sizeof(float)*BUFFSIZE);
+    
+    do 
+    {
+        getfloat(fp,(floatList+i));
+        ++i;
+        printf("\ni=%d",i);
+        if(i<=BUFFSIZE)
+        {
+            //mergesort
+            //
+            //return 1 for success, -1 for failure
+            //memstet floatlist
+            //continue
+        }
+    }while(!feof(fp));
+    
+    size = i-1;
+    fclose(fp);
+
+ /*   //create a input file
+    
+    fp = fopen("inputarray.txt","w");
+    if ( fp == NULL)
+    {
+        printf("\nUnable to open file inputarray.txt");
+        exit(1);
+    }
+    for(i=0;i<size;++i)
+        fprintf(fp,"%f\n",*(floatList+i));
+    
+    fclose(fp); */
+
+    mergesort(floatList,0,size); //Mergesort the current List
+
+//    mean = compute_mean(floatList,size); // Find mean of the current List
+
+//    var = compute_sample_var(mean,floatList,size); //Sample variance
+
+//    for(
+
+    //Store the current list in output-array (can be temporary file)
+    
+    fp = fopen("output-array.txt","w");
+    if ( fp == NULL)
+    {
+        printf("\nUnable to open file output-array.txt");
+        exit(1);
+    }
+    for(i=0;i<size;++i)
+        fprintf(fp,"%f\n",*(floatList+i));
+        
+    fclose(fp);
+
+  /*  //Store the current variance in output-array (can be temporary file)
+    
+    fp = fopen("variance-array.txt","w");
+    if ( fp == NULL)
+    {
+        printf("\nUnable to open file variance-array.txt");
+        exit(1);
+    }
+    for(i=0;i<size;++i)
+        fprintf(fp,"%f\n",*(var+i)); */
+
+
+    return 0;
+}
+
+/*
 
 
 int main(int argc, char *argv[])
@@ -121,7 +206,7 @@ int main(int argc, char *argv[])
 
 }
 
-
+*/
 
 
 /*
