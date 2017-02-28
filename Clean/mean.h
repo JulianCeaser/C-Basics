@@ -6,3 +6,4 @@ double compute_mean(float *A,int n);
 double compute_sample_var(double mean, float *A, int n);
 
 #endif
+
