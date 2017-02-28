@@ -62,7 +62,7 @@ int main(int argc, char **argv)
      FILE *fp,*fout;
      char output_file[] = "output.txt";
 
-     floatList = (float*)malloc(COUNTER*sizeof(float));
+    floatList = (float*)malloc(COUNTER*sizeof(float));
      
 
      while ((c=getc(fp)) != EOF)
