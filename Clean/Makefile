@@ -12,3 +12,4 @@ clean:
 	-rm -f *.0
 	-rm -f main
 	-rm -f output-array.txt
+	-rm -f *.dat

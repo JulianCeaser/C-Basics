@@ -1,15 +1,15 @@
 #include <stdlib.h>
 #include <stdio.h>
-#define EXIT_FAILURE 1
 #include "mean.h"
 #include "getfloat.h"
 #include <string.h>
 #include <unistd.h>
 
+#define EXIT_FAILURE 1
 
 
 #define FLOATSIZE   4   
-#define BUFFSIZE 512     //can hold 102400/4 = 25,600 (4 byte) floating point numbers
+#define BUFFSIZE 256     //can hold 102400/4 = 25,600 (4 byte) floating point numbers
 
 FILE *lst;
 float *floatList,*zscorelist;
@@ -48,7 +48,7 @@ void mergesort(float * lst, int a, int b)
 }
 
 
-/*
+
 
 FILE* openFile(char* fileName, char* mode)
  {
@@ -61,16 +61,17 @@ FILE* openFile(char* fileName, char* mode)
      return fp; 
  }
 
- */
+
 
 int main(int argc, char **argv)
 {
-    FILE *fp;
+    FILE *fp,*fp1;
     double var;
-    int i=0,size;
+    int i,j,count,size;
     float mean;
+    char temp_output[15];
 
-    fp = fopen(argv[1],"r");
+    fp = openFile(argv[1],"r");
     if ( fp == NULL)
     {
         printf("\nUnable to open input file");
@@ -79,22 +80,51 @@ int main(int argc, char **argv)
     
     floatList = (float *)malloc(sizeof(float)*BUFFSIZE);
     
+    i=0,count=0,size=0;
+
     do 
     {
-        getfloat(fp,(floatList+i));
+        getfloat(fp,(floatList+i));     // Get each floating point number from input file
         ++i;
-        printf("\ni=%d",i);
-        if(i<=BUFFSIZE)
+        
+        //If Buffer is filled then write out to temp files
+        if(i==BUFFSIZE)
         {
-            //mergesort
-            //
-            //return 1 for success, -1 for failure
-            //memstet floatlist
-            //continue
+            mergesort(floatList,0,i);
+            
+            sprintf(temp_output,"temp%d.dat",count);
+            fp1 = fopen(temp_output,"w");
+            if ( fp1 == NULL)
+            {
+                printf("\nUnable to open file output-array.txt");
+                exit(1);
+            }
+            for(j=0;j<i;++j)
+                fprintf(fp1,"%f\n",*(floatList+j));
+        
+            size += i;
+            i=0;
+            count++;
+            fclose(fp1);
         }
     }while(!feof(fp));
+
+    //If buffer is not filled then write out the last pass
     
-    size = i-1;
+    mergesort(floatList,0,i-1);
+            
+    sprintf(temp_output,"temp%d.dat",count);
+    fp1 = fopen(temp_output,"w");
+    if ( fp1 == NULL)
+    {
+        printf("\nUnable to open file output-array.txt");
+        exit(1);
+    }
+    for(j=0;j<i-1;++j)
+        fprintf(fp1,"%f\n",*(floatList+j));
+    fclose(fp1); 
+    
+    size += i-1;
     fclose(fp);
 
  /*   //create a input file
@@ -110,7 +140,7 @@ int main(int argc, char **argv)
     
     fclose(fp); */
 
-    mergesort(floatList,0,size); //Mergesort the current List
+//    mergesort(floatList,0,size); //Mergesort the current List
 
 //    mean = compute_mean(floatList,size); // Find mean of the current List
 
