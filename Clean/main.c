@@ -9,7 +9,7 @@
 
 
 #define FLOATSIZE   4   
-#define BUFFSIZE 256     //can hold 102400/4 = 25,600 (4 byte) floating point numbers
+#define MAX_FLOATS_READ_IN_HEAP 256     //can hold 102400/4 = 25,600 (4 byte) floating point numbers
 
 FILE *lst;
 float *floatList,*zscorelist;
@@ -27,7 +27,8 @@ void merge(float * lst, int a, int b, int s)
             tmp[ti++] = lst[ai++];
           else if (ai == b) 
             tmp[ti++] = lst[bi++];
-          else if (lst[ai] < lst[bi])
+          //else if (lst[ai] < lst[bi])
+          else if (lst[ai] > lst[bi])
              tmp[ti++] = lst[ai++];
           else 
              tmp[ti++] = lst[bi++];
@@ -67,7 +68,7 @@ int main(int argc, char **argv)
 {
     FILE *fp,*fp1;
     double var;
-    int i,j,count,size;
+    int num_of_floats_read, i,j,count,size;
     float mean;
     char temp_output[15];
 
@@ -77,20 +78,23 @@ int main(int argc, char **argv)
         printf("\nUnable to open input file");
         exit(1);
     }
-    
-    floatList = (float *)malloc(sizeof(float)*BUFFSIZE);
-    
-    i=0,count=0,size=0;
+   
+    //n = BUFFSIZE/sizeof(float) 
+    floatList = (float *)malloc(sizeof(float)*MAX_FLOATS_READ_IN_HEAP );
+    printf("floatList pointer address : = %p, size allocated = %d", floatList, (int)sizeof(floatList));
+ 
+    num_of_floats_read =0,count=0,size=0;
 
     do 
     {
-        getfloat(fp,(floatList+i));     // Get each floating point number from input file
-        ++i;
+        //getfloat(fp,(floatList+i));     // Get each floating point number from input file
+        getfloat(fp,(floatList+num_of_floats_read));     // Get each floating point number from input file
+        ++num_of_floats_read ;
         
         //If Buffer is filled then write out to temp files
-        if(i==BUFFSIZE)
+        if(num_of_floats_read  == MAX_FLOATS_READ_IN_HEAP)
         {
-            mergesort(floatList,0,i);
+            mergesort(floatList,0, num_of_floats_read);
             
             sprintf(temp_output,"temp%d.dat",count);
             fp1 = fopen(temp_output,"w");
@@ -99,11 +103,14 @@ int main(int argc, char **argv)
                 printf("\nUnable to open file output-array.txt");
                 exit(1);
             }
-            for(j=0;j<i;++j)
+            for(j=0;j<num_of_floats_read;++j)
                 fprintf(fp1,"%f\n",*(floatList+j));
         
-            size += i;
-            i=0;
+            size += num_of_floats_read ;
+            //reset pointer to floatList to the beginning of the memory
+            printf("floatList = %p\n", floatList);
+            //*floatList = *(floatList - num_of_floats_read);
+            num_of_floats_read=0;
             count++;
             fclose(fp1);
         }
@@ -111,7 +118,7 @@ int main(int argc, char **argv)
 
     //If buffer is not filled then write out the last pass
     
-    mergesort(floatList,0,i-1);
+    mergesort(floatList,0, num_of_floats_read-1);
             
     sprintf(temp_output,"temp%d.dat",count);
     fp1 = fopen(temp_output,"w");
@@ -120,11 +127,11 @@ int main(int argc, char **argv)
         printf("\nUnable to open file output-array.txt");
         exit(1);
     }
-    for(j=0;j<i-1;++j)
+    for(j=1;j<num_of_floats_read;++j)
         fprintf(fp1,"%f\n",*(floatList+j));
     fclose(fp1); 
     
-    size += i-1;
+    size +=num_of_floats_read-1;
     fclose(fp);
 
  /*   //create a input file
