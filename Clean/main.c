@@ -1,21 +1,96 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "mean.h"
-#include "getfloat.h"
 #include <string.h>
 #include <unistd.h>
+
+#include "mean.h"
+#include "getfloat.h"
+#include "heapsort.h"
 
 #define EXIT_FAILURE 1
 
 
-#define FLOATSIZE   4   
-#define MAX_FLOATS_READ_IN_HEAP 256     //can hold 102400/4 = 25,600 (4 byte) floating point numbers
+//#define FLOATSIZE   4   
+#define MAX_FLOATS_READ_IN_HEAP 256
 
 FILE *lst;
 float *floatList,*zscorelist;
 
-#define COUNTER 125
+//#define COUNTER 125
 //extern FILE* openFile(char* fileName, char* mode);
+
+FILE* openFile(char* fileName, char* mode)
+ {
+     FILE* fp = fopen(fileName, mode);
+     if (fp == NULL)
+     {   
+         perror("Error while opening the file\n");
+         exit(EXIT_FAILURE);
+     }   
+     return fp; 
+ }
+/*Merge k sorted files. */
+
+void mergeFiles (char *output_file, int n, int k){
+    // Array of file pointers to the chunks
+    FILE *in[k];    
+    for (int i=0; i<k; ++i){
+        char fileName[15];
+        
+        //convert i to string
+        sprintf(fileName,"temp%d.dat", i);
+        
+        // open output file in read mode
+        in[i] = openFile(fileName, "r");
+    }
+
+    //FINAL OUTPUT FILE
+    FILE *out = openFile(output_file,"w");
+    
+    //Create a min heap with k heap nodes. Every heap node 
+    //has first element of scratch output file 
+    heapNode *minHeap[k];
+
+    int i;
+    for (i=0; i<k; ++i){
+        minHeap[i] = createNode(in[i][0], i, 0);
+    }
+
+    //Build min heap with entered elements
+    buildHeap(minHeap,k-1);
+
+    // Now one by one get the minimun element from min
+    // heap and replace it with the next element.
+    // run till all filled input files reach EOF
+    
+    for(i=0; i<n*k;++i){
+        
+        //Get the minimun element and store it in output file
+        heapNode * minNode = minHeap[0];
+        fprintf(out, "%d", minNode->data);
+
+        //Find the next element that will replace current root
+        //of heap. The next element belongs to same input
+        //file as the current min element.
+        if(minNode->itemNum+1 < k){
+            minHeap[0] = createNode(in[minNode->arrayNum][minNode->itemNum+1],minNode->arrayNum,minNode->itemNum+1);                    
+        }
+        else{
+            minHeap[0] = createNode(INT_MAX, minNode->arrayNum, minNode->itemNum+1);
+        }
+        
+        //Replace root with next element of input file
+        minHeapify(minHeap,0,k-1);
+        
+    }
+
+    //for closing input and output files
+    for(int i=0; i<k; ++i)
+        fclose(in[i]);
+
+    fclose(out);
+}
+
 
 void merge(float * lst, int a, int b, int s)
 {
@@ -27,8 +102,8 @@ void merge(float * lst, int a, int b, int s)
             tmp[ti++] = lst[ai++];
           else if (ai == b) 
             tmp[ti++] = lst[bi++];
-          //else if (lst[ai] < lst[bi])
-          else if (lst[ai] > lst[bi])
+          else if (lst[ai] < lst[bi])
+          //else if (lst[ai] > lst[bi])
              tmp[ti++] = lst[ai++];
           else 
              tmp[ti++] = lst[bi++];
@@ -51,26 +126,14 @@ void mergesort(float * lst, int a, int b)
 
 
 
-FILE* openFile(char* fileName, char* mode)
- {
-     FILE* fp = fopen(fileName, mode);
-     if (fp == NULL)
-     {   
-         perror("Error while opening the file\n");
-         exit(EXIT_FAILURE);
-     }   
-     return fp; 
- }
-
-
-
 int main(int argc, char **argv)
 {
     FILE *fp,*fp1;
     double var;
-    int num_of_floats_read,actual_nums_read,i,j,count,size;
+    int num_of_floats_read,actual_nums_read,i,j,count,run_size;
     float mean;
     char temp_output[15];
+    char output_file[] = "output.txt"
 
     fp = openFile(argv[1],"r");
     if ( fp == NULL)
@@ -81,9 +144,9 @@ int main(int argc, char **argv)
    
     //n = BUFFSIZE/sizeof(float) 
     floatList = (float *)malloc(sizeof(float)*MAX_FLOATS_READ_IN_HEAP );
-    printf("floatList pointer address : = %p, size allocated = %d", floatList, (int)sizeof(floatList));
+    //printf("floatList pointer address : = %p, size allocated = %d", floatList, (int)sizeof(floatList));
  
-    num_of_floats_read =0,count=1,actual_nums_read=0;
+    num_of_floats_read = 0, run_size = 1, actual_nums_read = 0 ;
 
     do 
     {
@@ -109,7 +172,7 @@ int main(int argc, char **argv)
             //printf("floatList = %p\n", floatList);
             //*floatList = *(floatList - num_of_floats_read);
             num_of_floats_read=0;
-            count++;
+            run_size++;
             fclose(fp1);
             continue;
         }
@@ -117,7 +180,7 @@ int main(int argc, char **argv)
         
         //If buffer is not filled then write out the last pass
     
-        mergesort(floatList,0, num_of_floats_read-1);
+        mergesort(floatList,0,num_of_floats_read-1);
             
         sprintf(temp_output,"temp%d.dat",count);
         fp1 = openFile(temp_output,"w");
@@ -130,13 +193,11 @@ int main(int argc, char **argv)
     }while(!feof(fp));
         
     actual_nums_read +=num_of_floats_read-1;
-    fclose(fp);
+    fclose(fp); 
 
+    //Merge runs using K-way merging
     
-
-    return 0;
- 
- 
+    mergeFiles (output_file,MAX_FLOATS_READ_IN_HEAP,run_size);
 
 //    mergesort(floatList,0,size); //Mergesort the current List
 
@@ -148,7 +209,7 @@ int main(int argc, char **argv)
 
     //Store the current list in output-array (can be temporary file)
     
-    fp = fopen("output-array.txt","w");
+/*    fp = fopen("output-array.txt","w");
     if ( fp == NULL)
     {
         printf("\nUnable to open file output-array.txt");
@@ -158,7 +219,7 @@ int main(int argc, char **argv)
         fprintf(fp,"%f\n",*(floatList+i));
         
     fclose(fp);
-
+*/
   /*  //Store the current variance in output-array (can be temporary file)
     
     fp = fopen("variance-array.txt","w");
