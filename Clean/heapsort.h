@@ -3,9 +3,9 @@
 #define INT_MAX 1000
  
 typedef struct heapNode{
-        int data;
-        int arrayNum;
-        int itemNum;
+        int data;     //value
+        FILE* position; //position of the floating point number in the file
+        //int itemNum;  //index of the next element
 } heapNode ;
  
 int leftChild(int i){
@@ -14,15 +14,23 @@ int leftChild(int i){
 int rightChild(int i){
     return (2*i)+2;
 }
- 
-heapNode * createNode( int data, int arrayNum, int itemNum){
+
+
+int createNode( heapNode * newNode, int data, FILE* position){
+    heapNode * newNode = (heapNode *)malloc(sizeof(heapNode));
+    newNode->data = data;
+    newNode->arrayNum = position;
+         
+    return newNode;
+}
+/*heapNode * createNode( int data, int arrayNum, int itemNum){
     heapNode * newNode = (heapNode *)malloc(sizeof(heapNode));
     newNode->data = data;
     newNode->arrayNum = arrayNum;
     newNode->itemNum = itemNum;
      
     return newNode;
-}
+}*/
  
 void swap(heapNode * a[], int i, int j){
     heapNode * temp = a[i];

@@ -53,7 +53,7 @@ void mergeFiles (char *output_file, int n, int k){
 
     int i;
     for (i=0; i<k; ++i){
-        minHeap[i] = createNode(in[i][0], i, 0);
+        createNode(minHeap[i],);
     }
 
     //Build min heap with entered elements
