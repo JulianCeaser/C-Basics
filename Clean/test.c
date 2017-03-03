@@ -1,1 +1,5 @@
-12352
+#include <stdio.h>
+#include <string.h>
+
+struct student{
+

@@ -5,7 +5,7 @@
 
 #include "mean.h"
 #include "getfloat.h"
-#include "heapsort.h"
+//#include "heapsort.h"
 
 #define EXIT_FAILURE 1
 
@@ -31,6 +31,7 @@ FILE* openFile(char* fileName, char* mode)
  }
 /*Merge k sorted files. */
 
+/*
 void mergeFiles (char *output_file, int n, int k){
     // Array of file pointers to the chunks
     FILE *in[k];    
@@ -42,6 +43,7 @@ void mergeFiles (char *output_file, int n, int k){
         
         // open output file in read mode
         in[i] = openFile(fileName, "r");
+        printf("\nin[%d]",i);
     }
 
     //FINAL OUTPUT FILE
@@ -84,13 +86,14 @@ void mergeFiles (char *output_file, int n, int k){
         
     }
 
+
     //for closing input and output files
     for(int i=0; i<k; ++i)
         fclose(in[i]);
 
     fclose(out);
 }
-
+*/
 
 void merge(float * lst, int a, int b, int s)
 {
@@ -130,10 +133,10 @@ int main(int argc, char **argv)
 {
     FILE *fp,*fp1;
     double var;
-    int num_of_floats_read,actual_nums_read,i,j,count,run_size;
+    int num_of_floats_read,actual_nums_read,i,j,run_size;
     float mean;
     char temp_output[15];
-    char output_file[] = "output.txt"
+    char output_file[] = "output.txt";
 
     fp = openFile(argv[1],"r");
     if ( fp == NULL)
@@ -161,7 +164,7 @@ int main(int argc, char **argv)
         {
             mergesort(floatList,0, num_of_floats_read);
             
-            sprintf(temp_output,"temp%d.dat",count);
+            sprintf(temp_output,"temp%d.dat",run_size);
             fp1 = openFile(temp_output,"w");
             
             for(j=0;j<num_of_floats_read;++j)
@@ -182,7 +185,7 @@ int main(int argc, char **argv)
     
         mergesort(floatList,0,num_of_floats_read-1);
             
-        sprintf(temp_output,"temp%d.dat",count);
+        sprintf(temp_output,"temp%d.dat",run_size);
         fp1 = openFile(temp_output,"w");
         
         for(j=0;j<num_of_floats_read;++j)
@@ -197,7 +200,7 @@ int main(int argc, char **argv)
 
     //Merge runs using K-way merging
     
-    mergeFiles (output_file,MAX_FLOATS_READ_IN_HEAP,run_size);
+//    mergeFiles (output_file,MAX_FLOATS_READ_IN_HEAP,run_size);
 
 //    mergesort(floatList,0,size); //Mergesort the current List
 

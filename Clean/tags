@@ -4,16 +4,42 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-COUNTER	main.c	5;"	d	file:
+EXIT_FAILURE	main.c	10;"	d	file:
+INT_MAX	heapsort.c	7;"	d	file:
+INT_MAX	kmerge.c	8;"	d	file:
+MAX_FLOATS	genFloat.c	5;"	d	file:
+MAX_FLOATS_READ_IN_HEAP	heapsort.c	8;"	d	file:
+MAX_FLOATS_READ_IN_HEAP	main.c	14;"	d	file:
+MEAN_H_INCLUDED	mean.h	2;"	d
+arrayNum	kmerge.c	/^    int arrayNum;$/;"	m	struct:heapNode	file:
+buildHeap	kmerge.c	/^void buildHeap(heapNode *a[], int len){$/;"	f
 compute_mean	mean.c	/^double compute_mean(float *A,int n)$/;"	f
-compute_sample_var	mean.c	/^double compute_sample_var(double mean,float *A,     int n)$/;"	f
-downheap	heapsort.c	/^void downheap (int *a, int n, int i)$/;"	f
-getfloat	getfloat.c	/^int getfloat(float *pn)$/;"	f
-heapsort	heapsort.c	/^void heapsort (int *a, int n)$/;"	f
+compute_sample_var	mean.c	/^double compute_sample_var(double mean, float *A, int n)$/;"	f
+createNode	kmerge.c	/^heapNode * createNode (int data, int arrayNum, int itemNum){$/;"	f
+data	kmerge.c	/^    int data;$/;"	m	struct:heapNode	file:
+floatList	main.c	/^float *floatList,*zscorelist;$/;"	v
+getfloat	getfloat.h	/^int getfloat(FILE *stream, float *pn)$/;"	f
+heapNode	heapsort.c	/^typedef struct heapNode{$/;"	s	file:
+heapNode	heapsort.c	/^} heapNode ;$/;"	t	typeref:struct:heapNode	file:
+heapNode	kmerge.c	/^typedef struct heapNode{$/;"	s	file:
+heapNode	kmerge.c	/^} heapNode;$/;"	t	typeref:struct:heapNode	file:
+itemNum	kmerge.c	/^    int itemNum;$/;"	m	struct:heapNode	file:
+leftChild	heapsort.c	/^int leftChild(int i){$/;"	f
+leftChild	kmerge.c	/^int leftChild (int i){$/;"	f
 lst	main.c	/^FILE *lst;$/;"	v
-main	getfloat.c	/^int main(void)$/;"	f
-main	heapsort.c	/^int main()$/;"	f
+main	genFloat.c	/^int main(int argc, char *argv[])$/;"	f
+main	heapsort.c	/^int main(){$/;"	f
 main	main.c	/^int main(int argc, char **argv)$/;"	f
-max	heapsort.c	/^int max (int *a, int n, int i, int j, int k)$/;"	f
-merge	main.c	/^void merge(int * lst, int a, int b, int s)$/;"	f
-mergesort	main.c	/^void mergesort(int * lst, int a, int b)$/;"	f
+merge	main.c	/^void merge(float * lst, int a, int b, int s)$/;"	f
+mergesort	main.c	/^void mergesort(float * lst, int a, int b)$/;"	f
+minHeapify	heapsort.c	/^void minHeapify (heapNode *A, FILE *i, int len)$/;"	f
+openFile	genFloat.c	/^FILE* openFile(char* fileName, char* mode)$/;"	f
+openFile	heapsort.c	/^FILE* openFile(char* fileName, char* mode)$/;"	f
+openFile	main.c	/^FILE* openFile(char* fileName, char* mode)$/;"	f
+rightChild	heapsort.c	/^int rightChild(int i){$/;"	f
+rightChild	kmerge.c	/^int rightChild (int i){$/;"	f
+root_element	heapsort.c	/^        float *root_element;          \/\/value$/;"	m	struct:heapNode	file:
+root_index	heapsort.c	/^        FILE* root_index;            \/\/position of the floating point number in the file$/;"	m	struct:heapNode	file:
+student	test.c	/^struct student{$/;"	s	file:
+swap	kmerge.c	/^void swap(heapNode * a[], int i, int len){$/;"	f
+zscorelist	main.c	/^float *floatList,*zscorelist;$/;"	v

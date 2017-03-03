@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     // generate input
     for (int i = 0; i < MAX_FLOATS; i++)
     {    
-        float r = (float)rand()+(float)rand()/(float)RAND_MAX; 
+        float r = 1+(float)rand()/(float)RAND_MAX; 
         fprintf(in, "%1f,", r);
     }
     fclose(in);
