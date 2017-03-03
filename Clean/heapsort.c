@@ -6,26 +6,15 @@
 
 #define INT_MAX 1000
 #define MAX_FLOATS_READ_IN_HEAP 250
+#define FIRST_RUN 1
 
-/*
-typedef struct heapNode{
-        int data;
-        int arrayNum;
-        int itemNum;
-} heapNode ;
-*/
 
 typedef struct heapNode{
         float *root_element;          //value
         FILE* root_index;            //position of the floating point number in the file
 } heapNode ;
- 
-int leftChild(int i){
-    return (i*2)+1;
-}
-int rightChild(int i){
-    return (2*i)+2;
-}
+
+int run_flag = FIRST_RUN;
 
 FILE* openFile(char* fileName, char* mode)
   {
@@ -39,18 +28,6 @@ FILE* openFile(char* fileName, char* mode)
   }
 
 
-/*void sortedNode( heapNode * newNode){
-    heapNode * newNode = (heapNode *)malloc(sizeof(heapNode));         
-}*/
-
-/*heapNode * createNode( int data, int arrayNum, int itemNum){
-    heapNode * newNode = (heapNode *)malloc(sizeof(heapNode));
-    newNode->data = data;
-    newNode->arrayNum = arrayNum;
-    newNode->itemNum = itemNum;
-     
-    return newNode;
-}*/
  /*
 void swap(heapNode * a[], int i, int j){
     heapNode * temp = a[i];
@@ -61,18 +38,43 @@ void swap(heapNode * a[], int i, int j){
 // len = no_of_chunks,
 // A = array_of_elements (Node_list->root_element)
 // i = index of current smallest element
-/*
-void minHeapify (heapNode *A, FILE *i, int len)
+
+void minHeapify (heapNode *A, int index, int len)
 {
-    //int smallest = i;
-    FILE *smallest = A->root_index;
-    FILE *left, *right;
+    int i = index;
+
+    heapNode *smallest,*left,*right;
+    
+    smallest = (heapNode *)malloc(sizeof(heapNode));
+    left = (heapNode *)malloc(sizeof(heapNode));
+    right = (heapNode *)malloc(sizeof(heapNode));
+
+    smallest->root_index = (FILE *)malloc(sizeof(FILE));
+    smallest->root_element = (float *)malloc(sizeof(float));
+    
+    smallest->root_index = A[i].root_index;
+    printf("smallest->root_index = %p",smallest->root_index);
+
+    smallest->root_element = A[i].root_element;
      
+    
     //left = leftChild(i);
     //right = rightChild(i);
-    left = 2 * ;
+    left->root_index = (FILE *)malloc(sizeof(FILE));
+    left->root_index = (FILE *)malloc(sizeof(FILE));
+    right->root_element = (float *)malloc(sizeof(float));
+    right->root_element = (float *)malloc(sizeof(float));
+    
+    left->root_index = A[2*i].root_index;
+    left->root_element = A[2*i].root_element;
+    right->root_index = A[2*i+1].root_index;
+    right->root_element = A[2*i+1].root_element;
      
-    if(left <= len && A[i]->data > A[left]->data)
+    
+    printf("\nContext : left index[2*i] = %d, value of element at left index = %f, corresponding file pointer = %p\n",2*i,*(left->root_element),(left->root_index));
+
+  /*  //if(left <= len && A[i]->data > A[left]->data)
+    if(2*i <= len && A[i]->root_element > left->root_element)
     {        
         smallest = left;
     }
@@ -82,8 +84,8 @@ void minHeapify (heapNode *A, FILE *i, int len)
     if(smallest != i){
         swap(a, i, smallest);
         minHeapify(a, smallest, len);
-    }
-}*/
+    }*/
+}
 
  /*
 void buildHeap(heapNode *a[], int len){
@@ -191,7 +193,6 @@ int main(){
             perror("Root element is null");
         else    
         printf("\nContext : %s, fp_array[%d] = %p, root->element = %f\n",filename_chunk,i,fp_array[i],*(Node_list->root_element));
-        //    printf("\nroot_element = %f, Node_list pointer = %p\n",*(Node_list->root_element),Node_list);
         
         fp_list++;
         Node_list++;        
@@ -202,10 +203,10 @@ int main(){
     
  //   printf("\nNode_list pointer = %p,root_index = %p, total_chunks = %d\n",Node_list,Node_list->root_index,total_chunks);
 
-//    minHeapify (Node_list, Node_list->root_index, total_chunks);
+    //void minHeapify (heapNode *A, int index, int len)
+    minHeapify (Node_list, FIRST_RUN, total_chunks);
     
 
-    //void minHeapify (heapNode *A, FILE *i, int len)
     //float x = 5;
 
     //for(int i=0;i<run_size;++i){
