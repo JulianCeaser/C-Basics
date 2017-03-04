@@ -6,17 +6,17 @@
 
 #define INT_MAX 1000
 #define MAX_FLOATS_READ_IN_HEAP 1000
-#define FIRST_RUN   0
-
+#define DEBUG_ENABLED (0)
 
 int TEST_FLAG = 0;
+
 
 typedef struct heapNode{
         float *root_element;          //value
         FILE* root_index;            //position of the floating point number in the file
 } heapNode ;
 
-int run_flag = FIRST_RUN;
+
 
 FILE* openFile(char* fileName, char* mode)
   {
@@ -280,6 +280,7 @@ void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, FILE *fp_out, int total_chunks, in
         if ( feof((A+j)->root_index) )
         {
             //perror("Root element is null");
+            fclose((A+j)->root_index);
             total_chunks--;
         }
         //else    
@@ -303,7 +304,7 @@ int main(){
     int total_chunks = 8, max_floats_read = MAX_FLOATS_READ_IN_HEAP;
     char *filename_chunk;
     FILE *fp_list; //List of file pointer
-    FILE **fp_array;
+    //FILE **fp_array;
 
     FILE *fp_output; 
     fp_output = openFile("merged_output.txt","w");
@@ -324,7 +325,7 @@ int main(){
 
     // List to maintain file descriptors for reading each external chunk
     fp_list = (FILE *)malloc(sizeof(FILE)*total_chunks);
-    fp_array = (FILE **)malloc(sizeof(FILE *)*total_chunks);
+    //fp_array = (FILE **)malloc(sizeof(FILE *)*total_chunks);
 
     
     filename_chunk = (char *)malloc(sizeof(char*));
@@ -341,7 +342,7 @@ int main(){
         
         //Storing file pointer index in the Nodelist
         Node_list->root_index = fp_list;
-        fp_array[i] = Node_list->root_index;
+        //fp_array[i] = Node_list->root_index;
         
 
       //  printf("Node_list->root_index = %p",Node_list->root_index); 
@@ -354,8 +355,8 @@ int main(){
         getfloat(fp_list,Node_list->root_element);
         if ((Node_list->root_element) == NULL)
             perror("Root element is null");
-        else    
-        printf("\nContext : %s, fp_array[%d] = %p, root->element = %f\n",filename_chunk,i,fp_array[i],*(Node_list->root_element));
+        //else    
+        //printf("\nContext : %s, fp_array[%d] = %p, root->element = %f\n",filename_chunk,i,fp_array[i],*(Node_list->root_element));
         
         fp_list++;
         Node_list++;        
@@ -391,6 +392,35 @@ int main(){
     //MAX_HEAPSORT (Node_list, total_chunks);
    
     SORT_HEAP_AND_WRITE_OUTPUT (Node_list, fp_output, total_chunks, max_floats_read );
+
+    // Closing filepointers in fp_list and then freeing fp_list
+
+/*    fp_list = fp_list - total_chunks;
+
+    for(int i=0;i<total_chunks;++i){
+        if(fp_list != NULL){
+            fclose(fp_list);
+            fp_list++;
+        }
+    }
+    
+    if(fp_list != NULL)
+        free (fp_list);
+  */  
+    // Closing filepointers in Node_list and then freeing Node_list elements (floats) and Node_list itself
+    
+/*    for(int i=0;i<total_chunks;++i)
+    {
+        //if(Node_list->root_index != NULL )
+        //    fclose(Node_list->root_index);
+        
+        if(Node_list->root_element != NULL );
+        free(Node_list->root_element);
+    }
+  */  
+    if(Node_list != NULL )
+        free(Node_list);
+    
 
     return 0;
    
