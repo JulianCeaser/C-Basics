@@ -5,11 +5,11 @@
 #include "getfloat.h"
 
 #define INT_MAX 1000
-#define MAX_FLOATS_READ_IN_HEAP 250
+#define MAX_FLOATS_READ_IN_HEAP 1000
 #define FIRST_RUN   0
 
 
-int TEST_FLAG = 1;
+int TEST_FLAG = 0;
 
 typedef struct heapNode{
         float *root_element;          //value
@@ -251,6 +251,39 @@ void MAX_HEAPSORT (heapNode *A, int len)
     printf("\nExiting MAX_HEAPSORT \n");
 }
 
+void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, FILE *fp_out, int total_chunks, int max_floats)
+{
+    for (int i=0;i<max_floats;i++)
+    {
+        
+        // Build max-heap returns the highest element in  
+        BUILD_MAX_HEAP(A, total_chunks);
+        
+        // Build min-heap returns the highest element in  
+        //BUILD_MIN_HEAP(Node_list, total_chunks);
+    
+        //Display Heap
+        //DISPLAY_HEAP(A, total_chunks);
+    
+        //After Build Heap has returned, the first location of A ( i.e Node_list) has the hightest value
+        // We start writing the highest value in the output file ( this will contain merge result of all sorted chunks )    
+
+        //for(j=0;j<num_of_floats_read;++j)
+        fprintf(fp_out,"%f\n",*(A->root_element));
+
+        //manual run    
+        getfloat(A->root_index,A->root_element);
+        if ((A->root_element) == NULL )
+            perror("Root element is null");
+        else    
+            printf("\nContext : File pointer = %p, Next value = %f\n",(A->root_index),*(A->root_element));
+
+        //BUILD_MAX_HEAP(A, total_chunks);
+        //DISPLAY_HEAP(A, total_chunks);
+        //fprintf(fp_out,"%f\n ",*(A->root_element));
+        }
+}
+        
 
 
 
@@ -350,32 +383,9 @@ int main(){
     // Calling Max-HEAPSORT 
     //MAX_HEAPSORT (Node_list, total_chunks);
    
+    SORT_HEAP_AND_WRITE_OUTPUT (Node_list, fp_output, total_chunks, max_floats_read );
 
-    // Build max-heap returns the highest element in  
-    BUILD_MAX_HEAP(Node_list, total_chunks);
-    
-    // Build min-heap returns the highest element in  
-    //BUILD_MIN_HEAP(Node_list, total_chunks);
-    
-    //Display Heap
-    DISPLAY_HEAP(Node_list, total_chunks);
-
-    //After Build Heap has returned, the first location of A ( i.e Node_list) has the hightest value
-    // We start writing the highest value in the output file ( this will contain merge result of all sorted chunks )    
-
-    //for(j=0;j<num_of_floats_read;++j)
-    fprintf(fp_output,"%f , ",*(Node_list->root_element));
-
-    //manual run
-    Node_list->root_index = Node_list->(root_index++);
-
-    BUILD_MAX_HEAP(Node_list, total_chunks);
-    fprintf(fp_output,"%f , ",*(Node_list->root_element));
-
-
-        
-
-   return 0;
+    return 0;
    
 }
 
