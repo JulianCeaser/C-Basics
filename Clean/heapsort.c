@@ -50,25 +50,47 @@ int PARENT (int i)
 int LEFT ( int i)
 {
     return (2*i + 1);
+    //return (2*i);
 }
 int RIGHT ( int i)
 {
     return (2*i+2);
+    //return (2*i+1);
 }    
 
 void swap ( float *px, float *py)
 {
+    printf("\nBefore swap x = %f y = %f", *px, *py);
     float tmp;
     tmp = *px;
     *px = *py;
     *py = tmp;
+    printf("\nAfter swap x = %f y = %f", *px, *py);
 
 } 
 
 /* MIN-HEAPIFY as per Cormen's Algorithm */
 
+
+void DISPLAY_HEAP(heapNode *A, int len)
+{
+    printf ("Inside DISPLAY_HEAP\n");
+    for (int i = 0; i < len; i++)
+    {
+        //printf("A[%d] contains pointer  = %p\n", i,(A+i));
+        //printf("Inside A[%d] - root_index is  = %p\n",i, ((A+i))->root_index);;
+        printf("Inside A[%d] - root_element is  = %f\n",i, *((A+i)->root_element));
+     } 
+    printf ("Exiting DISPLAY_HEAP\n");
+
+}
+
 void MIN_HEAPIFY (heapNode *A, int index, int len)
 {
+
+    printf("\nEntering MIN_HEAPIFY \n ");
+    printf("\n Received Params : A = %p index = %d  len = %d\n",A, index, len);
+    printf("Inside A[%d] - root_element is  = %f\n",index, *((A+index)->root_element));
 
     /* Applying Cormen's Algorithm but adjusted for Smallest instead of largest */
 
@@ -80,13 +102,13 @@ void MIN_HEAPIFY (heapNode *A, int index, int len)
     r = RIGHT(i);
     smallest_index = i;
     
-    printf("LEFT = %d\n RIGHT=%d\n smallest_index=%d Heap size = %d\n", l, r, smallest_index, len);
-    if ((l <= len ) && (*((A+l)->root_element) < *((A+i)->root_element)))
+    printf("LEFT = %d\nRIGHT=%d\n smallest_index=%d Heap size = %d\n", l, r, smallest_index, len);
+    if ((l < len ) && (*((A+l)->root_element) < *((A+i)->root_element)))
           smallest_index = l;
     else
          smallest_index = i;
 
-    if ((r<= len) && (*((A+r)->root_element) < *((A+smallest_index)->root_element)))
+    if ((r< len) && (*((A+r)->root_element) < *((A+smallest_index)->root_element)))
         smallest_index= r;
     if (smallest_index != i )
     {
@@ -102,7 +124,8 @@ void MIN_HEAPIFY (heapNode *A, int index, int len)
         //minHeapify (A, smallest_index, len);
 
     } 
-    //Now print Node_list 
+    //Now print Node_list
+    /* 
     if (TEST_FLAG) 
     {
         for (int i = 0; i < len; i++){
@@ -114,8 +137,39 @@ void MIN_HEAPIFY (heapNode *A, int index, int len)
     
    // printf("Inside A[%d] - root_index for min element is  = %p\n",i, ((A+i))->root_index);;
 
+    } */
+
+    printf("\nExiting MIN_HEAPIFY \n");
+}
+
+void BUILD_MIN_HEAP(heapNode *A, int len)
+{
+    printf("\nEntering BUILD_MIN_HEAP \n");
+    for ( int i = (len)/2-1; i>=0; i--) { 
+        printf ("Calling MIN_HEAPIFY from BUILD_MIN_HEAP\n ");       
+        printf ("Calling with Params : index = %d \n ", i);       
+        MIN_HEAPIFY (A, i, len);
+    } 
+
+    printf("\nExiting BUILD_MIN_HEAP \n");
+}
+
+void HEAPSORT (heapNode *A, int len)
+{
+    printf("\nEntering HEAPSORT \n");
+    BUILD_MIN_HEAP(A, len);
+    for ( int i = len-1; i>=0; i--)
+    { 
+        printf ("Calling swap from HEAPSORT\n ");
+        printf("Pointer to (A+1) = %p (A+i)= %p \n", (A+1), (A+i));       
+        swap(((A)->root_element),((A+i)->root_element));
+        //swap(((A+1)->root_element),((A+i)->root_element));
+        len = len -1;
+         
+        MIN_HEAPIFY (A, 0, len);
     }
 
+    printf("\nExiting HEAPSORT \n");
 }
 
 /*
@@ -368,7 +422,7 @@ int main(){
         printf("\nNode_list pointer = %p,root_index = %p, total_chunks = %d\n",
                                   Node_list,    Node_list->root_index,  total_chunks);
 
-        printf("\n Calling Heapify\n");
+        //printf("\n Calling Heapify\n");
         printf("\nNode_list pointer at index 0 = %p\n",(Node_list));
         printf("\nNode_list pointer at index 1 = %p\n",(Node_list+1));
     }
@@ -376,8 +430,9 @@ int main(){
 
     //minHeapify (Node_list, FIRST_RUN, total_chunks);
     
-    MIN_HEAPIFY (Node_list, FIRST_RUN, total_chunks);
-
+    //MIN_HEAPIFY (Node_list, FIRST_RUN, total_chunks);
+    HEAPSORT (Node_list, total_chunks);
+    DISPLAY_HEAP(Node_list, total_chunks);
 
     //float x = 5;
 
