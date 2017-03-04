@@ -51,7 +51,7 @@ void minHeapify (heapNode *A, int index, int len)
         for (int i = 1; i <= len; i++){
             printf("A[%d] contains pointer  = %p\n", i,(A+i-1));
             printf("Inside A[%d] - root_index is  = %p\n",i, ((A+i-1))->root_index);;
-            printf("Inside A[%d] - root_element is  = %p\n",i, ((A+i-1)->root_element));
+            printf("Inside A[%d] - root_element is  = %f\n",i, *((A+i-1)->root_element));
 
         } 
     
@@ -103,8 +103,50 @@ void minHeapify (heapNode *A, int index, int len)
                             *(right->root_element),
                             (right->root_index));
 
+
+    /* Applying Cormen's Algorithm but adjusted for Smallest instead of largest */
+
+    int l, r, smallest_index ;
+    l = LEFT(i);
+    r = RIGHT(i);
+    smallest_index = i;
+    
+    if ((l <= len ) && (*((A+l)->root_element) < *((A+i)->root_element)))
+          smallest_index = l;
+    else
+         smallest_index = i;
+
+    if ((r<= len) && (*((A+r)->root_element) < *((A+smallest_index)->root_element)))
+        smallest_index= r;
+    if (smallest_index != i )
+    {
+        printf("\nBefore swap  A[%d] = %f, A[%d] = %f \n",i, smallest_index, *((A+i)->root_element), *((A+smallest_index)->root_element));
+        //void swap ( int *px, int *py)
+        swap ((A+i)->root_element, (A+smallest_index)->root_element);
+        printf("\nAfter swap  A[%d] = %f, A[%d] = %f \n",i, smallest_index, *((A+i)->root_element), *((A+smallest_index)->root_element));
+        minHeapify (A, i, len);
+
+    } 
+    
+    printf("Inside A[%d] - root_index for min element is  = %p\n",i, ((A+i-1))->root_index);;
+    printf("Inside A[%d] - Value of min_element is  = %f\n",i, *((A+i-1)->root_element));
+
+    //lets print the Array A across index 1 to len and see value of each element
+    if (TEST_FLAG) 
+    {
+        printf ("Printing Sorted Heap\n"); 
+        for (int i = 1; i <= len; i++){
+            printf("A[%d] contains pointer  = %p\n", i,(A+i-1));
+            printf("Inside A[%d] - root_index is  = %p\n",i, ((A+i-1))->root_index);;
+            printf("Inside A[%d] - root_element is  = %f\n",i, *((A+i-1)->root_element));
+
+        } 
+    
+    }
+    
+
   /*  //if(left <= len && A[i]->data > A[left]->data)
-    if(2*i <= len && A[i]->root_element > left->root_element)
+    if(2*i <= len && (A+i)->root_element > left->root_element)
     {        
         smallest = left;
     }
@@ -117,6 +159,32 @@ void minHeapify (heapNode *A, int index, int len)
     }*/
 }
 
+
+
+int PARENT (int i)
+{
+    return (i/2);
+}
+
+int LEFT ( int i)
+{
+    return 2*i;
+}
+int RIGHT ( int i)
+{
+    return (2*i+1);
+}    
+
+
+void swap ( int *px, int *py)
+{
+    int tmp;
+    tmp = *px;
+    *px = *py;
+    *py = tmp;
+
+
+} 
  /*
 void buildHeap(heapNode *a[], int len){
     int i = len/2 +1;
