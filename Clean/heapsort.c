@@ -69,6 +69,19 @@ void swap ( float *px, float *py)
 
 } 
 
+void swap_FP ( FILE *px, FILE *py)
+{
+    printf("\nBefore swap File Pointer = %p y = %p", px, py);
+    FILE *tmp;
+
+    tmp = px;
+    px = py;
+    py = tmp;
+    printf("\nAfter swap File Pointer = %p y = %p", px, py);
+
+} 
+
+
 /* MIN-HEAPIFY as per Cormen's Algorithm */
 
 
@@ -115,6 +128,7 @@ void MIN_HEAPIFY (heapNode *A, int index, int len)
         
         //void swap ( int *px, int *py)
         swap ((A+i)->root_element, (A+smallest_index)->root_element);
+        swap_FP ((A+i)->root_index, (A+smallest_index)->root_index);
         
         printf("\nafter swap  A[%d] = %f A[%d] = %f \n", i, *((A+i)->root_element), smallest_index, *((A+smallest_index)->root_element));
         
@@ -158,6 +172,7 @@ void MAX_HEAPIFY (heapNode *A, int index, int len)
         
         //void swap ( int *px, int *py)
         swap ((A+i)->root_element, (A+largest_index)->root_element);
+        swap_FP ((A+i)->root_index, (A+largest_index)->root_index);
         printf("\nAfter swap  A[%d] = %f A[%d] = %f \n", i, *((A+i)->root_element), largest_index, *((A+largest_index)->root_element));
         
         
@@ -207,6 +222,7 @@ void MIN_HEAPSORT (heapNode *A, int len)
         printf ("Calling swap from MIN_HEAPSORT\n ");
         printf("Pointer to (A) = %p (A+i)= %p \n", (A), (A+i));       
         swap(((A)->root_element),((A+i)->root_element));
+        swap_FP(((A)->root_index),((A+i)->root_index));
         len = len -1;
          
         MIN_HEAPIFY (A, 0, len);
@@ -226,6 +242,7 @@ void MAX_HEAPSORT (heapNode *A, int len)
         printf ("Calling swap from MAX_HEAPSORT\n ");
         printf("Pointer to (A) = %p (A+i)= %p \n", (A), (A+i));       
         swap(((A)->root_element),((A+i)->root_element));
+        swap_FP(((A)->root_index),((A+i)->root_index));
         len = len -1;
          
         MAX_HEAPIFY (A, 0, len);
@@ -248,6 +265,10 @@ int main(){
     FILE *fp_list; //List of file pointer
     FILE **fp_array;
 
+    FILE *fp_output; 
+    fp_output = openFile("merged_output.txt","w");
+
+   
     heapNode *Node_list;
     
     //inputNode = (heapNode*)malloc(sizeof(heapNode));
@@ -339,28 +360,21 @@ int main(){
     //Display Heap
     DISPLAY_HEAP(Node_list, total_chunks);
 
-    //float x = 5;
+    //After Build Heap has returned, the first location of A ( i.e Node_list) has the hightest value
+    // We start writing the highest value in the output file ( this will contain merge result of all sorted chunks )    
 
-    //for(int i=0;i<run_size;++i){
+    //for(j=0;j<num_of_floats_read;++j)
+    fprintf(fp_output,"%f , ",*(Node_list->root_element));
+
+    //manual run
+    Node_list->root_index = Node_list->(root_index++);
+
+    BUILD_MAX_HEAP(Node_list, total_chunks);
+    fprintf(fp_output,"%f , ",*(Node_list->root_element));
+
+
         
 
-    /*
-    int N = 5;
-    int K = 4;
-    int a[4][5] = { 
-            2,3,5,6,7,
-                    4,7,8,9,10,
-                    3,5,11,13,45,
-                    1,4,5,7,8
-                  };
- 
-   int result[K*N];
-   mergeKSortedArrays(a, N, K, result);          
- 
-   for(int i=0; i<N*K; i++){
-       printf("%d  ", result[i]);
-   }
-   */ 
    return 0;
    
 }
