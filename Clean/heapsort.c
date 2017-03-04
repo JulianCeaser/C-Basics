@@ -257,8 +257,12 @@ void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, FILE *fp_out, int total_chunks, in
     {
         
         // Build max-heap returns the highest element in  
-        BUILD_MAX_HEAP(A, total_chunks);
+        //BUILD_MAX_HEAP(A, total_chunks);
         
+        MAX_HEAPSORT(A, total_chunks);
+
+        int j = total_chunks-1;
+
         // Build min-heap returns the highest element in  
         //BUILD_MIN_HEAP(Node_list, total_chunks);
     
@@ -269,14 +273,17 @@ void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, FILE *fp_out, int total_chunks, in
         // We start writing the highest value in the output file ( this will contain merge result of all sorted chunks )    
 
         //for(j=0;j<num_of_floats_read;++j)
-        fprintf(fp_out,"%f\n",*(A->root_element));
+        fprintf(fp_out,"%f\n",*((A+j)->root_element));
 
         //manual run    
-        getfloat(A->root_index,A->root_element);
-        if ((A->root_element) == NULL )
-            perror("Root element is null");
-        else    
-            printf("\nContext : File pointer = %p, Next value = %f\n",(A->root_index),*(A->root_element));
+        getfloat((A+j)->root_index,(A+j)->root_element);
+        if ( feof((A+j)->root_index) )
+        {
+            //perror("Root element is null");
+            total_chunks--;
+        }
+        //else    
+            //printf("\nContext : File pointer = %p, Next value = %f\n",(A->root_index),*(A->root_element));
 
         //BUILD_MAX_HEAP(A, total_chunks);
         //DISPLAY_HEAP(A, total_chunks);
