@@ -11,7 +11,7 @@
 
 
 //#define FLOATSIZE   4   
-#define MAX_FLOATS_READ_IN_HEAP 256
+#define MAX_FLOATS_READ_IN_HEAP 128
 
 FILE *lst;
 float *floatList,*zscorelist;
