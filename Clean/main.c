@@ -95,7 +95,7 @@ void mergeFiles (char *output_file, int n, int k){
 }
 */
 
-void merge(float * lst, int a, int b, int s)
+void merge(float * lst, int a, int b, int s )
 {
     float tmp[s];
     int ti = a, ai = a, bi = b;
@@ -105,8 +105,11 @@ void merge(float * lst, int a, int b, int s)
             tmp[ti++] = lst[ai++];
           else if (ai == b) 
             tmp[ti++] = lst[bi++];
-          else if (lst[ai] < lst[bi])
-          //else if (lst[ai] > lst[bi])
+          // enable the below line for ascending order
+          //else if (lst[ai] < lst[bi])
+          
+          // enable the below line for descending order
+          else if (lst[ai] > lst[bi])
              tmp[ti++] = lst[ai++];
           else 
              tmp[ti++] = lst[bi++];
