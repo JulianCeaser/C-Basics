@@ -6,8 +6,10 @@
 
 #define INT_MAX 1000
 #define MAX_FLOATS_READ_IN_HEAP 250
-#define FIRST_RUN 1
+#define FIRST_RUN   1
 
+
+int TEST_FLAG = 1;
 
 typedef struct heapNode{
         float *root_element;          //value
@@ -44,34 +46,62 @@ void minHeapify (heapNode *A, int index, int len)
     int i = index;
 
     heapNode *smallest,*left,*right;
+    if (TEST_FLAG) 
+    {
+        for (int i = 1; i <= len; i++){
+            printf("A[%d] contains pointer  = %p\n", i,(A+i-1));
+            printf("Inside A[%d] - root_index is  = %p\n",i, ((A+i-1))->root_index);;
+            printf("Inside A[%d] - root_element is  = %p\n",i, ((A+i-1)->root_element));
+
+        } 
     
-    smallest = (heapNode *)malloc(sizeof(heapNode));
+    }
+
+    smallest = (heapNode*)malloc(sizeof(heapNode));
     left = (heapNode *)malloc(sizeof(heapNode));
     right = (heapNode *)malloc(sizeof(heapNode));
 
     smallest->root_index = (FILE *)malloc(sizeof(FILE));
     smallest->root_element = (float *)malloc(sizeof(float));
-    
-    smallest->root_index = A[i].root_index;
-    printf("smallest->root_index = %p",smallest->root_index);
-
-    smallest->root_element = A[i].root_element;
      
-    
+    smallest->root_index = (A+i)->root_index;
+
+    smallest->root_element =(A+i)->root_element;
+     
+    if (TEST_FLAG) 
+    {
+        printf("\nSize allocated for Smallest = %d\n",sizeof(smallest));
+        printf("\nSize allocated for left = %d\n",sizeof(left));
+        printf("\nSize allocated for right = %d\n",sizeof(right));
+        printf("A[%d]>root_index = %p\n",i, smallest->root_index);
+        printf("smallest->root_index = %p\n",smallest->root_index);
+    } 
+
     //left = leftChild(i);
     //right = rightChild(i);
     left->root_index = (FILE *)malloc(sizeof(FILE));
+
+
     left->root_index = (FILE *)malloc(sizeof(FILE));
     right->root_element = (float *)malloc(sizeof(float));
     right->root_element = (float *)malloc(sizeof(float));
     
-    left->root_index = A[2*i].root_index;
-    left->root_element = A[2*i].root_element;
-    right->root_index = A[2*i+1].root_index;
-    right->root_element = A[2*i+1].root_element;
+    left->root_index = (A+(2*i))->root_index;
+    left->root_element =(A+(2*i))->root_element;
+    right->root_index = (A+(2*i+1))->root_index;
+    right->root_element =(A+(2*i+1))->root_element;
      
     
-    printf("\nContext : left index[2*i] = %d, value of element at left index = %f, corresponding file pointer = %p\n",2*i,*(left->root_element),(left->root_index));
+    printf("\nContext :left index[2*i] = %d, element at left index = %f, file pointer = %p\n",
+                            (2*i), // index at 2xi
+                            *(left->root_element), 
+                            (left->root_index));
+
+
+    printf("\nContext :right index[2*i+1] = %d, element at right index = %f, file pointer = %p\n",
+                            (2*i+1),
+                            *(right->root_element),
+                            (right->root_index));
 
   /*  //if(left <= len && A[i]->data > A[left]->data)
     if(2*i <= len && A[i]->root_element > left->root_element)
@@ -156,16 +186,23 @@ int main(){
     heapNode *Node_list;
     
     //inputNode = (heapNode*)malloc(sizeof(heapNode));
-    
+   
+    // create a dynamic array containing list of heapNode
+    // size of dynamic array is set to total number of external chunks 
     Node_list = (heapNode*)malloc(sizeof(heapNode)*total_chunks);
+
+    // intialize memory for root_index 
     Node_list->root_index = (FILE *)malloc(sizeof(FILE));
+    // intialize memory for root_element 
     Node_list->root_element = (float *)malloc(sizeof(float));
 
+    // List to maintain file descriptors for reading each external chunk
     fp_list = (FILE *)malloc(sizeof(FILE)*total_chunks);
     fp_array = (FILE **)malloc(sizeof(FILE *)*total_chunks);
+
+    
     filename_chunk = (char *)malloc(sizeof(char*));
 
-    //printf("Size of Nodelist = %d",sizeof(Node_list));
     
     for(int i=1;i<=total_chunks;++i)
     {
@@ -197,13 +234,28 @@ int main(){
         fp_list++;
         Node_list++;        
     }
+    
+
+
+    // Very Important 
+    //Now reset the Node_list pointer to the begining of the Node_list
+    Node_list = Node_list - total_chunks;
+
+    
+
 
     //First pass of 1 element per chunk sent to Heapify
     
-    
- //   printf("\nNode_list pointer = %p,root_index = %p, total_chunks = %d\n",Node_list,Node_list->root_index,total_chunks);
+    if (TEST_FLAG) 
+    {   
+        printf("\nNode_list pointer = %p,root_index = %p, total_chunks = %d\n",
+                                  Node_list,    Node_list->root_index,  total_chunks);
 
-    //void minHeapify (heapNode *A, int index, int len)
+        printf("\n Calling Heapify\n");
+        printf("\nNode_list pointer at index 1 = %p\n",(Node_list+1));
+    }
+    
+
     minHeapify (Node_list, FIRST_RUN, total_chunks);
     
 
