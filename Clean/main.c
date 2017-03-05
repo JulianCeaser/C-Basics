@@ -150,8 +150,8 @@ void printBanner()
     printf("Usage Sequence 1.: main g\n");
     printf("Usage Sequence 2.: main s\n");
 
-    printf("-g [ this option generates Floating point Numbers in file input.txt ]\n");
-    printf("-s [ this option sorts in descending order Floating point Numbers in small chunks using Merge Sort\n");
+    printf("g [ this option generates Floating point Numbers in file input.txt ]\n");
+    printf("s [ this option sorts in descending order Floating point Numbers in small chunks using Merge Sort\n");
     printf("     Each sorted chunk is then persisted in files. In the next step, the algorithm performs Heap Sort to merge the externally sorted files]\n\n"); 
 
 }
