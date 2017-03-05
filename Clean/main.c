@@ -101,9 +101,10 @@ int callHeapSort (int total_chunks, int max_floats_read)
         //printf("\nfp_list = %p, Node_list->root_element = %p",fp_list,Node_list->root_element);
         getfloat(fp_list, Node_list->root_element);
         if ((Node_list->root_element) == NULL)
+        {
             perror("Root element is null");
             return -1;
-
+        }
         fp_list++;
         Node_list++;
     }
@@ -200,7 +201,7 @@ int main(int argc, char **argv)
             floatList = (float *)malloc(sizeof(float)*MAX_FLOATS_READ_IN_HEAP );
             //printf("floatList pointer address : = %p, size allocated = %d", floatList, (int)sizeof(floatList));
  
-            num_of_floats_read = 0, run_size = 1, actual_nums_read = 0 ; 
+            num_of_floats_read = 0, run_size = 0, actual_nums_read = 0 ; 
     
     
             t = clock(); // Initial Time
@@ -271,6 +272,7 @@ int main(int argc, char **argv)
             printf ("Merge Sort of Individual Chunks Complete\n");
 
             printf ("Calling HeapSort to Merge sorted chunks \n");
+            
             t = clock(); // Initial Time
                 printf("run_size = %d actual_nums_read=%d", run_size, actual_nums_read);
                 //callHeapSort (run_size-1, (actual_nums_read+1) );
