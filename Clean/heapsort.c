@@ -1,11 +1,8 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-
 #include "getfloat.h"
+#include "heapsort.h"
 
 #define CHUNKS 4
-#define MAX_FLOATS_READ_IN_HEAP 100000
+#define TOTAL_FLOATS 10000
 
 
 int TEST_FLAG = 0;
@@ -343,11 +340,12 @@ void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, FILE *fp_out, int total_chunks, in
 }
         
 
-
+/*
 int main()
 {
  
-    int total_chunks = CHUNKS, max_floats_read = MAX_FLOATS_READ_IN_HEAP;
+    int total_chunks = CHUNKS ;
+    int max_floats_read = TOTAL_FLOATS;
     char *filename_chunk;
     FILE *fp_list; //List of file pointer
 
@@ -431,5 +429,6 @@ int main()
 
     return 0;
    
-}
+} */
+
 
