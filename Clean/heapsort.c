@@ -73,16 +73,16 @@ void swap_FP ( FILE *px, FILE *py)
 
 void DISPLAY_HEAP(heapNode *A, int len)
 {
-    #ifdef DEBUG_ENABLED
+    //#ifdef DEBUG_ENABLED
         printf ("Inside DISPLAY_HEAP\n");
-    #endif
+    //#endif
     
     for (int i = 0; i < len; i++)
         printf("Inside A[%d] - root_element is  = %f\n",i, *((A+i)->root_element));
     
-    #ifdef DEBUG_ENABLED
+    //#ifdef DEBUG_ENABLED
         printf ("Exiting DISPLAY_HEAP\n");
-    #endif
+    //#endif
 
 }
 
@@ -297,7 +297,7 @@ void MAX_HEAPSORT (heapNode *A, int len)
         printf("\nExiting MAX_HEAPSORT \n");
     #endif
 }
-
+/*
 void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, FILE *fp_out, int total_chunks, int max_floats)
 {
     for (int i=0;i<max_floats;i++)
@@ -330,7 +330,7 @@ void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, FILE *fp_out, int total_chunks, in
             total_chunks--;
         }
     }
-}
+}*/
         
 
 /*

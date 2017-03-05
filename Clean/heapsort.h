@@ -9,8 +9,8 @@
 #define TOTAL_FLOATS 10000
 
 typedef struct heapNode{
-         float *root_element;          //value
-         FILE* root_index;            //position of the floating point number in the file
+        FILE* root_index;              //position of the floating point number in the file
+        float *root_element;           //value
 } heapNode ;
  
 
@@ -43,6 +43,7 @@ void MIN_HEAPSORT (heapNode *A, int len);
 
 void MAX_HEAPSORT (heapNode *A, int len);
 
-void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, FILE *fp_out, int total_chunks, int max_floats);
+void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, int total_chunks, int max_floats);
+//void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, FILE *fp_out, int total_chunks, int max_floats);
         
 #endif

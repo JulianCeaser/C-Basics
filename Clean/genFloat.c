@@ -20,12 +20,14 @@ int genFloat(char* inputfile)
     //FILE* in = openFile(inputfile, "w");
     FILE* in = fopen(inputfile, "w");
     srand((unsigned int)time(NULL));
+    
+    float a = 5;
 
     // generate input
     for (int i = 0; i < MAX_FLOATS; i++)
     {    
-        float r = 1+(float)rand()/(float)RAND_MAX; 
-        fprintf(in, "%1f,\n", r);
+        float r = (1+(float)rand()/(float)RAND_MAX) * a; 
+        fprintf(in, "%.2f,\n", r);
     }
     fclose(in);
 
