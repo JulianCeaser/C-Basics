@@ -11,7 +11,7 @@
 typedef struct heapNode{
          float *root_element;          //value
          FILE* root_index;            //position of the floating point number in the file
- } heapNode ;
+} heapNode ;
  
 
 //typedef struct heapNode heapNode ;
