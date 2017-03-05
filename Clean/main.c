@@ -57,8 +57,10 @@ void mergesort(float * lst, int a, int b)
 
 int callHeapSort (int total_chunks, int max_floats_read)
 {
-
-    printf("\ncallHeapSort: Received Params: total_chunks =%d max_floats_read=%d\n", total_chunks, max_floats_read);
+    #ifdef DEBUG_ENABLED
+        printf("\ncallHeapSort: Received Params: total_chunks =%d max_floats_read=%d\n", total_chunks, max_floats_read);
+    #endif // DEBUG_ENABLED
+    
     //int total_chunks = CHUNKS ;
     //int max_floats_read = TOTAL_FLOATS;
     char *filename_chunk;
@@ -86,7 +88,7 @@ int callHeapSort (int total_chunks, int max_floats_read)
     
     filename_chunk = (char *)malloc(sizeof(char*));
 
-     for(int i=1;i<=total_chunks;++i)
+    for(int i=0;i<total_chunks;++i)
     {   
         Node_list->root_index = (FILE *)malloc(sizeof(FILE));
         Node_list->root_element = (float *)malloc(sizeof(float));
@@ -127,7 +129,7 @@ int callHeapSort (int total_chunks, int max_floats_read)
 
         printf("\nNode_list pointer at index 0 = %p\n",(Node_list));
         printf("\nNode_list pointer at index 1 = %p\n",(Node_list+1));
-    #endif
+    #endif // DEBUG_ENABLED
 
 
     // Calling Min-HEAPSORT 
@@ -139,6 +141,8 @@ int callHeapSort (int total_chunks, int max_floats_read)
 
     SORT_HEAP_AND_WRITE_OUTPUT (Node_list, fp_output, total_chunks, max_floats_read );
 
+    printf ("\n Sorted Chunks are merged using Heap Sort and writen to output file = merged_output.txt\n");
+    
     if(Node_list != NULL )
         free(Node_list);
 
@@ -181,7 +185,7 @@ int main(int argc, char **argv)
     if ((argc == 2 ) && (( !strcmp(argv[1], "g"))))
     {
         genFloat(input_file);
-        printf("Floating point numbers generated in %s\n", input_file);    
+        printf("\nFloating point numbers have been generated in %s\n", input_file);    
 
     }
     else if ((argc == 2 ) && (( !strcmp(argv[1], "s") )))
@@ -196,7 +200,9 @@ int main(int argc, char **argv)
         }
         else
         {
-            printf("\n Now starting to perform External Merge Sort \n"); 
+            printf("\n ----------------------------------");
+            printf("\n External Sort Program initialised \n"); 
+            printf(" ----------------------------------");
             //
             //n = BUFFSIZE/sizeof(float) 
             floatList = (float *)malloc(sizeof(float)*MAX_FLOATS_READ_IN_HEAP );
@@ -208,14 +214,16 @@ int main(int argc, char **argv)
             t = clock(); // Initial Time
             t1 = t;
 
+            printf("\n Mergesort started. Creating and writing to disk temporary chunks\n");
+
             do  
             {   
-                //getfloat(fp,(floatList+i));     // Get each floating point number from input file
                 getfloat(fp,(floatList+num_of_floats_read));     // Get each floating point number from input file
                 if( feof(fp) )
                     break;
                 ++num_of_floats_read ;
     
+
                 //If Buffer is filled then write out to temp files
                 if(num_of_floats_read  == MAX_FLOATS_READ_IN_HEAP)
                 {
@@ -228,10 +236,12 @@ int main(int argc, char **argv)
                         fprintf(fp1,"%f\n",*(floatList+j));
     
                     actual_nums_read += num_of_floats_read ;
+                    
                     //reset pointer to floatList to the beginning of the memory
-                    //printf("floatList = %p\n", floatList);
-                    //*floatList = *(floatList - num_of_floats_read);
                     num_of_floats_read=0;
+                    #ifdef DEBUG_ENABLED 
+                        printf("floatList = %p\n", floatList);
+                    #endif // DEBUG ENABLED
     
                     #ifdef TIMER
                         t1 = clock() - t1; 
@@ -242,9 +252,11 @@ int main(int argc, char **argv)
                     fclose(fp1);
                     continue;
                 }
-                //If buffer is not filled then write out the last pass
+                
+                //If buffer is not filled then keep writing until it is or until EOF
 
-                mergesort(floatList,0,num_of_floats_read-1);
+                //mergesort(floatList,0,num_of_floats_read-1);
+                mergesort(floatList,0,num_of_floats_read);
 
                 sprintf(temp_output,"temp%d.dat",run_size);
                 fp1 = openFile(temp_output,"w");
@@ -257,7 +269,7 @@ int main(int argc, char **argv)
                     cpu_time_used = ((double)t1)/CLOCKS_PER_SEC; // Time in seconds
                     printf("\nMergesort for chunk %d complete. Time taken is %lf\n",run_size,cpu_time_used);
                 #endif /* TIMER */
-
+                
                 fclose(fp1);
 
             }while(!feof(fp));
@@ -265,22 +277,26 @@ int main(int argc, char **argv)
             t = clock() - t;    // Final Time
             cpu_time_used = ((double)t)/CLOCKS_PER_SEC; // Time in seconds
 
-            printf("\nTotal Time Taken to generate Sorted chunks using Merge Sort is %lf secs\n",cpu_time_used);
+            printf("\n Merge Sort completed. Total %d chunks generated.\n",run_size);
+            printf("\n Total Time Taken to generate sorted chunks using Merge Sort is %lf secs\n",cpu_time_used);
 
-            actual_nums_read +=num_of_floats_read-1;
+            actual_nums_read +=num_of_floats_read;
             fclose(fp);
 
-            printf ("Merge Sort of Individual Chunks Complete\n");
-
-            printf ("Calling HeapSort to Merge sorted chunks \n");
+            printf ("\n Calling HeapSort to Merge sorted chunks \n");
             
             t = clock(); // Initial Time
+            
+            #ifdef DEBUG_ENABLED
                 printf("run_size = %d actual_nums_read=%d", run_size, actual_nums_read);
-                //callHeapSort (run_size-1, (actual_nums_read+1) );
-                callHeapSort (run_size, actual_nums_read );
+            #endif // DEBUG_ENABLED
+
+            //callHeapSort (run_size-1, (actual_nums_read+1) );
+            callHeapSort (run_size, actual_nums_read );
+            
             t = clock() - t;  // Final Time
             cpu_time_used = ((double)t)/CLOCKS_PER_SEC; // Time in seconds
-            printf("\nTotal time taken to HeapSort is %lf secs\n",cpu_time_used);
+            printf("\n Total time taken to Heapsort and write output file is %lf secs\n",cpu_time_used);
    
         } 
 

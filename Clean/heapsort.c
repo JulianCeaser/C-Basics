@@ -1,4 +1,4 @@
-#include "genFloat.h"
+#include "getfloat.h"
 #include "heapsort.h"
 
 #define CHUNKS 4

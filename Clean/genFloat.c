@@ -3,11 +3,9 @@
 #include <time.h>
 #include "heapsort.h" 
 
+#define MAX_FLOATS 10000 //  Ten Thousand
 //#define MAX_FLOATS 100000 // Hundred Thousand
 //#define MAX_FLOATS 1000000 // One Million Floats
-#define MAX_FLOATS 10000 //  Ten Thousand
-
-
 //# define MAX_FLOATS 1000000000 //One Billion floats 
 
 
@@ -15,9 +13,10 @@
  
 int genFloat(char* inputfile)
 {
-    // No. of Partitions of input file.
-
-    printf ( "Inside genFloat : received filename =%s", inputfile);
+    #ifdef DEBUG_ENABLED
+        printf ( "\nInside genFloat filename = %s\n", inputfile);
+    #endif // DEBUG_ENALED
+    
     //FILE* in = openFile(inputfile, "w");
     FILE* in = fopen(inputfile, "w");
     srand((unsigned int)time(NULL));
