@@ -13,14 +13,14 @@ main.o: main.c getfloat.h mean.h
 genFloat: genFloat.o
 	gcc genFloat.o -o genFloat
 
-genFloat.o: genFloat
+genFloat.o: genFloat.c
 	gcc -c genFloat.c
 
 heapsort: heapsort.o
 	gcc heapsort.o -o heapsort -l m
 
 heapsort.o: heapsort.c getfloat.h
-	gcc -c heapsort.c
+	gcc -c heapsort.c 
 
 clean:
 	-rm -f *.0

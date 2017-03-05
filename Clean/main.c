@@ -1,7 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
+//#include <unistd.h>
+#include <time.h>
 
 #include "mean.h"
 #include "getfloat.h"
@@ -11,7 +12,7 @@
 
 
 //#define FLOATSIZE   4   
-#define MAX_FLOATS_READ_IN_HEAP 128
+#define MAX_FLOATS_READ_IN_HEAP 25000
 
 FILE *lst;
 float *floatList,*zscorelist;
@@ -140,6 +141,8 @@ int main(int argc, char **argv)
     float mean;
     char temp_output[15];
     char output_file[] = "output.txt";
+    clock_t t,t1;      // Timer variable
+    double cpu_time_used;
 
     fp = openFile(argv[1],"r");
     if ( fp == NULL)
@@ -153,6 +156,10 @@ int main(int argc, char **argv)
     //printf("floatList pointer address : = %p, size allocated = %d", floatList, (int)sizeof(floatList));
  
     num_of_floats_read = 0, run_size = 1, actual_nums_read = 0 ;
+    
+    
+    t = clock(); // Initial Time
+    t1 = t;
 
     do 
     {
@@ -178,6 +185,13 @@ int main(int argc, char **argv)
             //printf("floatList = %p\n", floatList);
             //*floatList = *(floatList - num_of_floats_read);
             num_of_floats_read=0;
+        
+            #ifdef TIMER
+                t1 = clock() - t1;
+                cpu_time_used = ((double)t1)/CLOCKS_PER_SEC; // Time in seconds
+                printf("\nMergesort for chunk %d complete. Time taken is %lf \n",run_size,cpu_time_used);
+            #endif /* TIMER */
+
             run_size++;
             fclose(fp1);
             continue;
@@ -194,10 +208,22 @@ int main(int argc, char **argv)
         for(j=0;j<num_of_floats_read;++j)
             fprintf(fp1,"%f\n",*(floatList+j));
 
+        #ifdef TIMER
+            t1 = clock() - t1;
+            cpu_time_used = ((double)t1)/CLOCKS_PER_SEC; // Time in seconds
+            printf("\nMergesort for chunk %d complete. Time taken is %lf\n",run_size,cpu_time_used);
+        #endif /* TIMER */
+        
         fclose(fp1);
 
     }while(!feof(fp));
         
+    t = clock() - t;    // Final Time
+    cpu_time_used = ((double)t)/CLOCKS_PER_SEC; // Time in seconds
+
+    printf("\nTotal Mergesort and creation of chunks complete. Total time taken is %lf \n",cpu_time_used);
+    
+    
     actual_nums_read +=num_of_floats_read-1;
     fclose(fp); 
 
@@ -336,4 +362,3 @@ int main(int argc, char **argv)
      return 0;
 }
 */
-
