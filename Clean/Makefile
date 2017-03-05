@@ -2,25 +2,23 @@
 #  target: dependencies
 #  	action
 
-all: main genFloat heapsort
+all: getfloat.o genFloat.o heapsort.o main
 
-main: main.o
-	gcc main.o -o main -l m
-
-main.o: main.c getfloat.h mean.h heapsort.h
-	gcc -c main.c
-
-genFloat: genFloat.o
-	gcc genFloat.o -o genFloat
+getfloat.o: getfloat.c
+	gcc -c getfloat.c
 
 genFloat.o: genFloat.c
 	gcc -c genFloat.c
 
-heapsort: heapsort.o
-	gcc heapsort.o -o heapsort -l m
+heapsort.o: heapsort.c
+	gcc -c heapsort.c
 
-heapsort.o: heapsort.c heapsort.h getfloat.h
-	gcc -c heapsort.c 
+main: getfloat.h getfloat.o genFloat.h genFloat.o heapsort.h heapsort.o main.c
+	gcc -o main getfloat.o genFloat.o heapsort.o main.c -D DEBUG_ENABLED -l m
+
+
+run :
+	extSort
 
 clean:
 	-rm -f *.0
@@ -30,3 +28,4 @@ clean:
 	-rm -f output-array.txt
 	-rm -f *.dat
 	-rm -f input.txt
+	-rm -f merged_output.txt 
