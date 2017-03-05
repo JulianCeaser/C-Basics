@@ -18,6 +18,7 @@
 FILE *lst;
 float *floatList,*zscorelist;
 
+float *chunk_means;
 
 void merge(float * lst, int a, int b, int s )
 {

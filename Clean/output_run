@@ -1,0 +1,174 @@
+pipa@pipa-VirtualBox:~/workspace/c-prog/030217/C-Basics/Clean$ ./heapsort 
+
+Context : temp1.dat, fp_array[1] = 0x218b9e0, root->element = 8.000000
+
+Context : temp2.dat, fp_array[2] = 0x218d130, root->element = 7.000000
+
+Context : temp3.dat, fp_array[3] = 0x218e470, root->element = 5.000000
+
+Context : temp4.dat, fp_array[4] = 0x218f7b0, root->element = 6.000000
+
+Context : temp5.dat, fp_array[5] = 0x2190af0, root->element = 3.000000
+
+Context : temp6.dat, fp_array[6] = 0x2191e30, root->element = 4.000000
+
+Context : temp7.dat, fp_array[7] = 0x2193170, root->element = 12.000000
+
+Context : temp8.dat, fp_array[8] = 0x21944b0, root->element = 1.000000
+
+Node_list pointer = 0x218b010,root_index = 0x218b9e0, total_chunks = 8
+
+Node_list pointer at index 0 = 0x218b010
+
+Node_list pointer at index 1 = 0x218b020
+
+Entering HEAPSORT 
+
+Entering BUILD_MIN_HEAP 
+Calling MIN_HEAPIFY from BUILD_MIN_HEAP
+ Calling with Params : index = 3 
+ 
+Entering MIN_HEAPIFY 
+ 
+ Received Params : A = 0x218b010 index = 3  len = 8
+Inside A[3] - root_element is  = 6.000000
+LEFT = 7
+RIGHT=8
+ smallest_index=3 Heap size = 8
+
+Before swap  A[3] = 6.000000 A[7] = 1.000000 
+
+Before swap x = 6.000000 y = 1.000000
+After swap x = 1.000000 y = 6.000000
+after swap  A[3] = 1.000000 A[7] = 6.000000 
+MIN_HEAPIFY Params : A =0x218b010, smallest_index = 7, len = 8
+Entering MIN_HEAPIFY 
+ 
+ Received Params : A = 0x218b010 index = 7  len = 8
+Inside A[7] - root_element is  = 6.000000
+LEFT = 15
+RIGHT=16
+ smallest_index=7 Heap size = 8
+
+Exiting MIN_HEAPIFY 
+
+Exiting MIN_HEAPIFY 
+Calling MIN_HEAPIFY from BUILD_MIN_HEAP
+ Calling with Params : index = 2 
+ 
+Entering MIN_HEAPIFY 
+ 
+ Received Params : A = 0x218b010 index = 2  len = 8
+Inside A[2] - root_element is  = 5.000000
+LEFT = 5
+RIGHT=6
+ smallest_index=2 Heap size = 8
+
+Before swap  A[2] = 5.000000 A[5] = 4.000000 
+
+Before swap x = 5.000000 y = 4.000000
+After swap x = 4.000000 y = 5.000000
+after swap  A[2] = 4.000000 A[5] = 5.000000 
+MIN_HEAPIFY Params : A =0x218b010, smallest_index = 5, len = 8
+Entering MIN_HEAPIFY 
+ 
+ Received Params : A = 0x218b010 index = 5  len = 8
+Inside A[5] - root_element is  = 5.000000
+LEFT = 11
+RIGHT=12
+ smallest_index=5 Heap size = 8
+
+Exiting MIN_HEAPIFY 
+
+Exiting MIN_HEAPIFY 
+Calling MIN_HEAPIFY from BUILD_MIN_HEAP
+ Calling with Params : index = 1 
+ 
+Entering MIN_HEAPIFY 
+ 
+ Received Params : A = 0x218b010 index = 1  len = 8
+Inside A[1] - root_element is  = 7.000000
+LEFT = 3
+RIGHT=4
+ smallest_index=1 Heap size = 8
+
+Before swap  A[1] = 7.000000 A[3] = 1.000000 
+
+Before swap x = 7.000000 y = 1.000000
+After swap x = 1.000000 y = 7.000000
+after swap  A[1] = 1.000000 A[3] = 7.000000 
+MIN_HEAPIFY Params : A =0x218b010, smallest_index = 3, len = 8
+Entering MIN_HEAPIFY 
+ 
+ Received Params : A = 0x218b010 index = 3  len = 8
+Inside A[3] - root_element is  = 7.000000
+LEFT = 7
+RIGHT=8
+ smallest_index=3 Heap size = 8
+
+Before swap  A[3] = 7.000000 A[7] = 6.000000 
+
+Before swap x = 7.000000 y = 6.000000
+After swap x = 6.000000 y = 7.000000
+after swap  A[3] = 6.000000 A[7] = 7.000000 
+MIN_HEAPIFY Params : A =0x218b010, smallest_index = 7, len = 8
+Entering MIN_HEAPIFY 
+ 
+ Received Params : A = 0x218b010 index = 7  len = 8
+Inside A[7] - root_element is  = 7.000000
+LEFT = 15
+RIGHT=16
+ smallest_index=7 Heap size = 8
+
+Exiting MIN_HEAPIFY 
+
+Exiting MIN_HEAPIFY 
+
+Exiting MIN_HEAPIFY 
+Calling MIN_HEAPIFY from BUILD_MIN_HEAP
+ Calling with Params : index = 0 
+ 
+Entering MIN_HEAPIFY 
+ 
+ Received Params : A = 0x218b010 index = 0  len = 8
+Inside A[0] - root_element is  = 8.000000
+LEFT = 1
+RIGHT=2
+ smallest_index=0 Heap size = 8
+
+Before swap  A[0] = 8.000000 A[1] = 1.000000 
+
+Before swap x = 8.000000 y = 1.000000
+After swap x = 1.000000 y = 8.000000
+after swap  A[0] = 1.000000 A[1] = 8.000000 
+MIN_HEAPIFY Params : A =0x218b010, smallest_index = 1, len = 8
+Entering MIN_HEAPIFY 
+ 
+ Received Params : A = 0x218b010 index = 1  len = 8
+Inside A[1] - root_element is  = 8.000000
+LEFT = 3
+RIGHT=4
+ smallest_index=1 Heap size = 8
+
+Before swap  A[1] = 8.000000 A[4] = 3.000000 
+
+Before swap x = 8.000000 y = 3.000000
+After swap x = 3.000000 y = 8.000000
+after swap  A[1] = 3.000000 A[4] = 8.000000 
+MIN_HEAPIFY Params : A =0x218b010, smallest_index = 4, len = 8
+Entering MIN_HEAPIFY 
+ 
+ Received Params : A = 0x218b010 index = 4  len = 8
+Inside A[4] - root_element is  = 8.000000
+LEFT = 9
+RIGHT=10
+ smallest_index=4 Heap size = 8
+
+Exiting MIN_HEAPIFY 
+
+Exiting MIN_HEAPIFY 
+
+Exiting MIN_HEAPIFY 
+
+Exiting BUILD_MIN_HEAP 
+Segmentation fault (core dumped)
