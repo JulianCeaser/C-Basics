@@ -1,4 +1,4 @@
-#include "getfloat.h"
+#include "genFloat.h"
 #include "heapsort.h"
 
 #define CHUNKS 4
@@ -7,12 +7,12 @@
 
 int TEST_FLAG = 0;
 
-
+/*
 typedef struct heapNode{
         float *root_element;          //value
         FILE* root_index;            //position of the floating point number in the file
 } heapNode ;
-
+*/
 
 
 FILE* openFile(char* fileName, char* mode)
