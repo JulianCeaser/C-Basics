@@ -7,7 +7,7 @@ all: main genFloat heapsort
 main: main.o
 	gcc main.o -o main -l m
 
-main.o: main.c getfloat.h mean.h
+main.o: main.c getfloat.h mean.h heapsort.h
 	gcc -c main.c
 
 genFloat: genFloat.o
@@ -19,7 +19,7 @@ genFloat.o: genFloat.c
 heapsort: heapsort.o
 	gcc heapsort.o -o heapsort -l m
 
-heapsort.o: heapsort.c getfloat.h
+heapsort.o: heapsort.c heapsort.h getfloat.h
 	gcc -c heapsort.c 
 
 clean:
