@@ -6,13 +6,14 @@
 
 #include "mean.h"
 #include "getfloat.h"
-//#include "heapsort.h"
+#include "heapsort.h"
 
 #define EXIT_FAILURE 1
 
 
 //#define FLOATSIZE   4   
-#define MAX_FLOATS_READ_IN_HEAP 25000
+//#define MAX_FLOATS_READ_IN_HEAP 25000
+#define MAX_FLOATS_READ_IN_HEAP 2500
 
 FILE *lst;
 float *floatList,*zscorelist;
@@ -32,69 +33,6 @@ FILE* openFile(char* fileName, char* mode)
  }
 /*Merge k sorted files. */
 
-/*
-void mergeFiles (char *output_file, int n, int k){
-    // Array of file pointers to the chunks
-    FILE *in[k];    
-    for (int i=0; i<k; ++i){
-        char fileName[15];
-        
-        //convert i to string
-        sprintf(fileName,"temp%d.dat", i);
-        
-        // open output file in read mode
-        in[i] = openFile(fileName, "r");
-        printf("\nin[%d]",i);
-    }
-
-    //FINAL OUTPUT FILE
-    FILE *out = openFile(output_file,"w");
-    
-    //Create a min heap with k heap nodes. Every heap node 
-    //has first element of scratch output file 
-    heapNode *minHeap[k];
-
-    int i;
-    for (i=0; i<k; ++i){
-        createNode(minHeap[i],);
-    }
-
-    //Build min heap with entered elements
-    buildHeap(minHeap,k-1);
-
-    // Now one by one get the minimun element from min
-    // heap and replace it with the next element.
-    // run till all filled input files reach EOF
-    
-    for(i=0; i<n*k;++i){
-        
-        //Get the minimun element and store it in output file
-        heapNode * minNode = minHeap[0];
-        fprintf(out, "%d", minNode->data);
-
-        //Find the next element that will replace current root
-        //of heap. The next element belongs to same input
-        //file as the current min element.
-        if(minNode->itemNum+1 < k){
-            minHeap[0] = createNode(in[minNode->arrayNum][minNode->itemNum+1],minNode->arrayNum,minNode->itemNum+1);                    
-        }
-        else{
-            minHeap[0] = createNode(INT_MAX, minNode->arrayNum, minNode->itemNum+1);
-        }
-        
-        //Replace root with next element of input file
-        minHeapify(minHeap,0,k-1);
-        
-    }
-
-
-    //for closing input and output files
-    for(int i=0; i<k; ++i)
-        fclose(in[i]);
-
-    fclose(out);
-}
-*/
 
 void merge(float * lst, int a, int b, int s )
 {
@@ -131,7 +69,96 @@ void mergesort(float * lst, int a, int b)
 }
 
 
+int callHeapSort (int total_chunks, int max_floats_read)
+{
 
+    //int total_chunks = CHUNKS ;
+    //int max_floats_read = TOTAL_FLOATS;
+    char *filename_chunk;
+    FILE *fp_list; //List of file pointer
+
+    FILE *fp_output; 
+    fp_output = openFile("merged_output.txt","w");
+
+   
+    heapNode *Node_list;
+    
+    // create a dynamic array containing list of heapNode
+    // size of dynamic array is set to total number of external chunks 
+    Node_list = (heapNode*)malloc(sizeof(heapNode)*total_chunks);
+
+    // intialize memory for root_index 
+    Node_list->root_index = (FILE *)malloc(sizeof(FILE));
+    // intialize memory for root_element 
+    Node_list->root_element = (float *)malloc(sizeof(float));
+
+    // List to maintain file descriptors for reading each external chunk
+    fp_list = (FILE *)malloc(sizeof(FILE)*total_chunks);
+    //fp_array = (FILE **)malloc(sizeof(FILE *)*total_chunks);
+
+    
+    filename_chunk = (char *)malloc(sizeof(char*));
+
+     for(int i=1;i<=total_chunks;++i)
+    {   
+        Node_list->root_index = (FILE *)malloc(sizeof(FILE));
+        Node_list->root_element = (float *)malloc(sizeof(float));
+    
+        sprintf(filename_chunk,"temp%d.dat",i);
+        fp_list = openFile(filename_chunk,"r");
+    
+        //Storing file pointer index in the Nodelist
+        Node_list->root_index = fp_list;
+
+
+        //Getfloat takes the filepointer fp and stores the root element into Nodelist->root_element
+        //printf("\nfp_list = %p, Node_list->root_element = %p",fp_list,Node_list->root_element);
+        getfloat(fp_list,Node_list->root_element);
+        if ((Node_list->root_element) == NULL)
+            perror("Root element is null");
+            return -1;
+
+        fp_list++;
+        Node_list++;
+    }
+
+
+
+    // Very Important 
+    //Now reset the Node_list pointer to the begining of the Node_list
+    Node_list = Node_list - total_chunks;
+
+
+
+
+    //First pass of 1 element per chunk sent to Heapify
+
+    #ifdef DEBUG_ENABLED
+
+        printf("\nNode_list pointer = %p,root_index = %p, total_chunks = %d\n",
+                                  Node_list,    Node_list->root_index,  total_chunks);
+
+        printf("\nNode_list pointer at index 0 = %p\n",(Node_list));
+        printf("\nNode_list pointer at index 1 = %p\n",(Node_list+1));
+    #endif
+
+
+    // Calling Min-HEAPSORT 
+    //MIN_HEAPSORT (Node_list, total_chunks);
+
+
+    // Calling Max-HEAPSORT 
+    //MAX_HEAPSORT (Node_list, total_chunks);
+
+    SORT_HEAP_AND_WRITE_OUTPUT (Node_list, fp_output, total_chunks, max_floats_read );
+
+    if(Node_list != NULL )
+        free(Node_list);
+
+    return 1;
+
+
+}
 
 int main(int argc, char **argv)
 {
@@ -144,6 +171,11 @@ int main(int argc, char **argv)
     clock_t t,t1;      // Timer variable
     double cpu_time_used;
 
+    if (argc != 2) 
+    {
+        printf("Usage : main <input.txt>");  
+    }
+     
     fp = openFile(argv[1],"r");
     if ( fp == NULL)
     {
@@ -221,49 +253,20 @@ int main(int argc, char **argv)
     t = clock() - t;    // Final Time
     cpu_time_used = ((double)t)/CLOCKS_PER_SEC; // Time in seconds
 
-    printf("\nTotal Mergesort and creation of chunks complete. Total time taken is %lf \n",cpu_time_used);
+    printf("\nTotal Time Taken to generate Sorted chunks using Merge Sort is %lf secs\n",cpu_time_used);
     
     
     actual_nums_read +=num_of_floats_read-1;
     fclose(fp); 
 
-    //Merge runs using K-way merging
+    printf ("Merge Sort of Individual Chunks Complete\n");
+    printf ("Calling HeapSort to Merge sorted chunks \n");
+    t = clock(); // Initial Time
+        callHeapSort (run_size, actual_nums_read );
+    t = clock() - t;  // Final Time
+    cpu_time_used = ((double)t)/CLOCKS_PER_SEC; // Time in seconds
+    printf("\nTotal time taken to HeapSort is %lf secs\n",cpu_time_used);
     
-//    mergeFiles (output_file,MAX_FLOATS_READ_IN_HEAP,run_size);
-
-//    mergesort(floatList,0,size); //Mergesort the current List
-
-//    mean = compute_mean(floatList,size); // Find mean of the current List
-
-//    var = compute_sample_var(mean,floatList,size); //Sample variance
-
-//    for(
-
-    //Store the current list in output-array (can be temporary file)
-    
-/*    fp = fopen("output-array.txt","w");
-    if ( fp == NULL)
-    {
-        printf("\nUnable to open file output-array.txt");
-        exit(1);
-    }
-    for(i=0;i<actual_nums_read;++i)
-        fprintf(fp,"%f\n",*(floatList+i));
-        
-    fclose(fp);
-*/
-  /*  //Store the current variance in output-array (can be temporary file)
-    
-    fp = fopen("variance-array.txt","w");
-    if ( fp == NULL)
-    {
-        printf("\nUnable to open file variance-array.txt");
-        exit(1);
-    }
-    for(i=0;i<size;++i)
-        fprintf(fp,"%f\n",*(var+i)); */
-
-
     return 0;
 }
 
