@@ -7,20 +7,13 @@
 
 int TEST_FLAG = 0;
 
-/*
-typedef struct heapNode{
-        float *root_element;          //value
-        FILE* root_index;            //position of the floating point number in the file
-} heapNode ;
-*/
-
 
 FILE* openFile(char* fileName, char* mode)
   {
       FILE* fp = fopen(fileName, mode);
       if (fp == NULL)
       {
-          perror("Error while opening the file\n");
+          printf("Error while opening %s in mode =%s \n", fileName, mode);
           exit(EXIT_FAILURE);
       }
       return fp;
@@ -330,7 +323,7 @@ void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, FILE *fp_out, int total_chunks, in
         fprintf(fp_out,"%f\n",*((A+j)->root_element));
 
         //Reading the next floating point number to replace the max number
-        getfloat((A+j)->root_index,(A+j)->root_element);
+        getfloat((A+j)->root_index, (A+j)->root_element);
         if ( feof((A+j)->root_index) )
         {
             fclose((A+j)->root_index);
