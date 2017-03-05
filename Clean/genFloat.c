@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "heapsort.h" 
 
 //#define MAX_FLOATS 100000 // Hundred Thousand
 //#define MAX_FLOATS 1000000 // One Million Floats
@@ -10,34 +11,15 @@
 //# define MAX_FLOATS 1000000000 //One Billion floats 
 
 
-FILE* openFile(char* fileName, char* mode)
- {
-     FILE* fp = fopen(fileName, mode);
-     if (fp == NULL)
-     {
-         perror("Error while opening the file\n");
-         exit(EXIT_FAILURE);
-     }
-     return fp;
- }
-
-
-
-
-
 /* Generate Floating number */
  
-int main(int argc, char *argv[])
+int genFloat(char* inputfile)
 {
     // No. of Partitions of input file.
 
-//    printf("Usage : -m <maxsize of floats>\n");
-//    printf("argc=%d", argc); 
-    char input_file[] = "input.txt";
-//    char output_file[] = "output.txt";
-
-    FILE* in = openFile(input_file, "w");
-
+    printf ( "Inside genFloat : received filename =%s", inputfile);
+    //FILE* in = openFile(inputfile, "w");
+    FILE* in = fopen(inputfile, "w");
     srand((unsigned int)time(NULL));
 
     // generate input
