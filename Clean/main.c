@@ -12,7 +12,7 @@
 #include "getfloat.h"
 #include "heapsort.h"
 
-//#define MEAN
+#define MEAN
 //#define HEAP_DEBUG
 
 //#define MAX_FLOATS_READ_IN_HEAP 256
@@ -22,7 +22,8 @@
 //Global Variable Declaration///
 ////////////////////////////////
 
-float mean = 0.0, zscore = 0.0;
+float mean = 0.0;
+double zscore = 0.0;
 float *floatList, *zscoreList;
 
 void merge(float * lst, int a, int b, int s )
@@ -61,7 +62,7 @@ void mergesort(float * lst, int a, int b)
 
 void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, int total_chunks, int max_floats)
 {
-     float variance, sum_of_variance;
+    float variance, sum_of_variance;
      
     FILE *fp_out, *zscore_out;
     fp_out = openFile("merged_output.txt","w");
@@ -72,16 +73,16 @@ void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, int total_chunks, int max_floats)
         
         // Build max-heap returns the highest element in  
         //BUILD_MAX_HEAP(A, total_chunks);
-  //      #ifdef HEAP_DEBUG
+        #ifdef HEAP_DEBUG
             printf("\n Context : i = %d, total_chunks = %d\n",i,total_chunks);
-  //      #endif // HEAP_DEBUG
+        #endif // HEAP_DEBUG
 
         MAX_HEAPSORT(A, total_chunks);
         
-  //      #ifdef HEAP_DEBUG
+        #ifdef HEAP_DEBUG
             printf ("\n Iterative Display_Heap\n");
             DISPLAY_HEAP(A,total_chunks);
-  //      #endif // HEAP_DEBUG
+        #endif // HEAP_DEBUG
 
         int j = total_chunks-1;
 
@@ -95,9 +96,9 @@ void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, int total_chunks, int max_floats)
         // We start writing the highest value in the output file ( this will contain merge result of all sorted chunks )    
 
         //for(j=0;j<num_of_floats_read;++j)
-   //     #ifdef HEAP_DEBUG
+        #ifdef HEAP_DEBUG
             printf("\n After Max_Heapsort of Node_list, total chunks = %d, Element written %f\n",total_chunks,*((A+j)->root_element));
-   //     #endif // HEAP_DEBUG
+        #endif // HEAP_DEBUG
 
         //Variance is calculated and sum of all variance is stored in zscore 
         variance = *((A+j)->root_element) - mean ;
@@ -112,27 +113,27 @@ void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, int total_chunks, int max_floats)
         //getfloat((A+j)->root_index, (A+j)->root_element);
         getfloat((A+j)->root_index, (A+j)->root_element);
 
-   //     #ifdef HEAP_DEBUG
+        #ifdef HEAP_DEBUG
             printf("\n Getfloat() is called and now the Heap looks like this before MAX_HEAPSORT is called again.\n");
             DISPLAY_HEAP(A,total_chunks);
             printf("\n After getfloat(), root_element = %f, root_index = %p\n",*((A+j)->root_element),(A+j)->root_index);
-   //     #endif // HEAP_DEBUG
+        #endif // HEAP_DEBUG
 
         if ( feof((A+j)->root_index) )
         {
             fclose((A+j)->root_index);
             
-     //       #ifdef HEAP_DEBUG
+            #ifdef HEAP_DEBUG
                 printf("\n Heap 2 (chunk not decreased) \n");
                 DISPLAY_HEAP(A,total_chunks);
-     //       #endif // HEAP_DEBUG
+            #endif // HEAP_DEBUG
 
             total_chunks--;
 
-      //      #ifdef HEAP_DEBUG
+            #ifdef HEAP_DEBUG
                 printf("\n Heap 3 (chunk decreased )\n");
                 DISPLAY_HEAP(A,total_chunks);
-      //      #endif // HEAP_DEBUG
+            #endif // HEAP_DEBUG
         }
     }
     

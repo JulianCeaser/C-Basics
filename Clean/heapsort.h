@@ -26,21 +26,23 @@ int LEFT ( int i);
 
 int RIGHT ( int i);
 
-void swap ( float *px, float *py, FILE *fp1, FILE *fp2 );
+
+void swap ( heapNode **, heapNode ** );
+//void swap ( float *px, float *py, FILE *fp1, FILE *fp2 );
 
 //void swap_FP ( FILE *px, FILE *py);
 
 void DISPLAY_HEAP(heapNode *A, int len);
 
-void MIN_HEAPIFY (heapNode *A, int index, int len);
+//void MIN_HEAPIFY (heapNode *A, int index, int len);
 
 void MAX_HEAPIFY (heapNode *A, int index, int len);
 
-void BUILD_MIN_HEAP(heapNode *A, int len);
+//void BUILD_MIN_HEAP(heapNode *A, int len);
 
 void BUILD_MAX_HEAP(heapNode *A, int len);
 
-void MIN_HEAPSORT (heapNode *A, int len);
+//void MIN_HEAPSORT (heapNode *A, int len);
 
 void MAX_HEAPSORT (heapNode *A, int len);
 
