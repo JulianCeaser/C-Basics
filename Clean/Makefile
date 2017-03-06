@@ -30,6 +30,7 @@ clean:
 	clear
 	-rm -f *.o
 	-rm -f *.dat
+	-rm -f *.txt
 	-rm -f main
 	-rm -f input.txt
 	-rm -f merged_output.txt

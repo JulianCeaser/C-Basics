@@ -1,0 +1,5 @@
+
+1.fp1 (fp3=fp1)
+1.fp3 (fp3=fp1)
+3.fp2 (fp2=fp3)
+3.fp3 (fp2=fp3)

@@ -1,1 +1,0 @@
-Total Mergesort and creation of chunks complete. Total time taken is 310.167154. Total chunks = 4, Total floats = 100000, Max_floats_per_chunk = 25000

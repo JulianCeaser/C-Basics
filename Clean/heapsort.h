@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 #define CHUNKS 4
 #define TOTAL_FLOATS 10000
@@ -25,9 +26,9 @@ int LEFT ( int i);
 
 int RIGHT ( int i);
 
-void swap ( float *px, float *py);
+void swap ( float *px, float *py, FILE *fp1, FILE *fp2 );
 
-void swap_FP ( FILE *px, FILE *py);
+//void swap_FP ( FILE *px, FILE *py);
 
 void DISPLAY_HEAP(heapNode *A, int len);
 

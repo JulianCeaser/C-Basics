@@ -3,7 +3,8 @@
 #include <time.h>
 #include "heapsort.h" 
 
-#define MAX_FLOATS 10000 //  Ten Thousand
+#define MAX_FLOATS 1000 //  One Thousand
+//#define MAX_FLOATS 10000 //  Ten Thousand
 //#define MAX_FLOATS 100000 // Hundred Thousand
 //#define MAX_FLOATS 1000000 // One Million Floats
 //# define MAX_FLOATS 1000000000 //One Billion floats 
@@ -27,7 +28,7 @@ int genFloat(char* inputfile)
     for (int i = 0; i < MAX_FLOATS; i++)
     {    
         float r = (1+(float)rand()/(float)RAND_MAX) * a; 
-        fprintf(in, "%.2f,\n", r);
+        fprintf(in, "%f\n", r);
     }
     fclose(in);
 

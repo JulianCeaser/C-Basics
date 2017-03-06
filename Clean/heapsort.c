@@ -4,7 +4,6 @@
 #define CHUNKS 4
 #define TOTAL_FLOATS 10000
 
-
 int TEST_FLAG = 0;
 
 
@@ -35,27 +34,36 @@ int RIGHT ( int i)
     //return (2*i+1);
 }    
 
-void swap ( float *px, float *py)
+void swap ( float *px, float *py, FILE *fp1, FILE *fp2)
 {
     #ifdef DEBUG_ENABLED
-        printf("\nBefore swap x = %f y = %f", *px, *py);
+        printf("\nBefore swap index element = %f, largest_index element = %f\n", *px, *py);
     #endif
     
+    // swap px and py
     float tmp;
+
     tmp = *px;
     *px = *py;
     *py = tmp;
 
+    // swap fp1 and fp2
+    FILE *fp3;
+    
+    fp3 = fp1;
+    fp1 = fp2;
+    fp2 = fp3;
+
     #ifdef DEBUG_ENABLED
-        printf("\nAfter swap x = %f y = %f", *px, *py);
+        printf("\nAfter swap index element = %f, largest_index element = %f\n", *px, *py);
     #endif
 
 } 
 
-void swap_FP ( FILE *px, FILE *py)
+/*void swap_FP ( FILE *px, FILE *py)
 {
     #ifdef DEBUG_ENABLED
-        printf("\nBefore swap File Pointer = %p y = %p", px, py);
+        printf("\nBefore swap File Pointer = %p y = %p", *px, *py);
     #endif
     
     FILE *tmp;
@@ -65,10 +73,10 @@ void swap_FP ( FILE *px, FILE *py)
     py = tmp;
     
     #ifdef DEBUG_ENABLED
-        printf("\nAfter swap File Pointer = %p y = %p", px, py);
+        printf("\nAfter swap File Pointer = %p y = %p", *px, *py);
     #endif
 
-} 
+} */
 
 
 void DISPLAY_HEAP(heapNode *A, int len)
@@ -78,7 +86,7 @@ void DISPLAY_HEAP(heapNode *A, int len)
     //#endif
     
     for (int i = 0; i < len; i++)
-        printf("Inside A[%d] - root_element is  = %f\n",i, *((A+i)->root_element));
+        printf("Inside A[%d] - root index = %p, root_element is  = %f\n",i, (A+i)->root_index ,*((A+i)->root_element));
     
     //#ifdef DEBUG_ENABLED
         printf ("Exiting DISPLAY_HEAP\n");
@@ -121,14 +129,13 @@ void MIN_HEAPIFY (heapNode *A, int index, int len)
             printf("\nBefore swap  A[%d] = %f A[%d] = %f \n", i, *((A+i)->root_element), smallest_index, *((A+smallest_index)->root_element));
         #endif
 
-        //void swap ( int *px, int *py)
-        swap ((A+i)->root_element, (A+smallest_index)->root_element);
-        swap_FP ((A+i)->root_index, (A+smallest_index)->root_index);
+        swap ( (A+i)->root_element, (A+smallest_index)->root_element, (A+i)->root_index, (A+smallest_index)->root_index );
+        //swap_FP (((A+i)->root_index), ((A+smallest_index)->root_index);
         
 
         #ifdef DEBUG_ENABLED
             printf("\nafter swap  A[%d] = %f A[%d] = %f \n", i, *((A+i)->root_element), smallest_index, *((A+smallest_index)->root_element));
-            printf ("MIN_HEAPIFY Params : A =%p, smallest_index = %d, len = %d", A, smallest_index,len); 
+            printf ("\nMIN_HEAPIFY Params : A =%p, smallest_index = %d, len = %d\n", A, smallest_index,len); 
         #endif
             
         MIN_HEAPIFY (A, smallest_index, len);
@@ -177,9 +184,7 @@ void MAX_HEAPIFY (heapNode *A, int index, int len)
             printf("\nBefore swap  A[%d] = %f A[%d] = %f \n", i, *((A+i)->root_element), largest_index, *((A+largest_index)->root_element));
         #endif
         
-        //void swap ( int *px, int *py)
-        swap ((A+i)->root_element, (A+largest_index)->root_element);
-        swap_FP ((A+i)->root_index, (A+largest_index)->root_index);
+        swap ( (A+i)->root_element, (A+largest_index)->root_element, (A+i)->root_index, (A+largest_index)->root_index );
         
         #ifdef DEBUG_ENABLED
             printf("\nAfter swap  A[%d] = %f A[%d] = %f \n", i, *((A+i)->root_element), largest_index, *((A+largest_index)->root_element));
@@ -258,8 +263,8 @@ void MIN_HEAPSORT (heapNode *A, int len)
             printf("Pointer to (A) = %p (A+i)= %p \n", (A), (A+i));       
         #endif
 
-        swap(((A)->root_element),((A+i)->root_element));
-        swap_FP(((A)->root_index),((A+i)->root_index));
+        swap( (A->root_element), ((A+i)->root_element), (A->root_index), ((A+i)->root_index));
+//      swap_FP(((A)->root_index),((A+i)->root_index));
         len = len -1;
          
         MIN_HEAPIFY (A, 0, len);
@@ -267,6 +272,7 @@ void MIN_HEAPSORT (heapNode *A, int len)
 
     #ifdef DEBUG_ENABLED
         printf("\nExiting MIN_HEAPSORT \n");
+        DISPLAY_HEAP(A, len);
     #endif
 }
 
@@ -286,8 +292,10 @@ void MAX_HEAPSORT (heapNode *A, int len)
             printf("Pointer to (A) = %p (A+i)= %p \n", (A), (A+i));       
         #endif
 
-        swap(((A)->root_element),((A+i)->root_element));
-        swap_FP(((A)->root_index),((A+i)->root_index));
+        swap( (A->root_element), ((A+i)->root_element), (A->root_index), ((A+i)->root_index));
+//      swap(((A)->root_element),((A+i)->root_element));
+//      swap_FP(((A)->root_index),((A+i)->root_index));
+
         len = len -1;
          
         MAX_HEAPIFY (A, 0, len);
@@ -295,6 +303,7 @@ void MAX_HEAPSORT (heapNode *A, int len)
 
     #ifdef DEBUG_ENABLED
         printf("\nExiting MAX_HEAPSORT \n");
+        DISPLAY_HEAP(A, len);
     #endif
 }
 /*
