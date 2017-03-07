@@ -16,7 +16,7 @@
 //#define HEAP_DEBUG
 
 //#define MAX_FLOATS_READ_IN_HEAP 256
-#define MAX_FLOATS_READ_IN_HEAP 5
+#define MAX_FLOATS_READ_IN_HEAP 2500
 
 ////////////////////////////////
 //Global Variable Declaration///
@@ -82,35 +82,35 @@ void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, int total_chunks, int max_floats)
         *(heap_max+i) = *((A+i)->root_element);
     }
 
+    int j = total_chunks-1;         
+    
     for (int i=0;i<max_floats;i++)
     {
-        
+
         // Build max-heap returns the highest element   
         
         #ifdef HEAP_DEBUG
-            printf("\n Context : i = %d, total_chunks = %d\n",i,total_chunks);
-            DISPLAY_HEAP(heap_max,total_chunks);
+            printf("\n Before Heapsort, Context : i = %d, total_chunks = %d\n",i,total_chunks);
+            DISPLAY_HEAP(heap_max,j+1);
         #endif // HEAP_DEBUG
 
-        MAX_HEAPSORT(heap_max, total_chunks);
+        MAX_HEAPSORT(heap_max, j+1);
         
         #ifdef HEAP_DEBUG
             printf ("\n After Max Heapsort Display_Heap\n");
-            DISPLAY_HEAP(heap_max,total_chunks);
+            DISPLAY_HEAP(heap_max,j+1);
         #endif // HEAP_DEBUG
-
-        int j = total_chunks-1;
 
         // We start writing the highest value in the output file ( this will contain merge result of all sorted chunks )    
 
-        #ifdef HEAP_DEBUG
-            printf("\n After Max_Heapsort of Node_list, total chunks = %d, Element written %f\n",total_chunks,*(heap_max+j));
-        #endif // HEAP_DEBUG
+        //#ifdef HEAP_DEBUG
+            printf("\n After Max_Heapsort of Node_list, total chunks = %d, Element written %f\n",j+1,*(heap_max+j));
+        //#endif // HEAP_DEBUG
 
         //Variance is calculated and sum of all variance is stored in zscore 
         variance = *(heap_max+j) - mean ;
         sum_of_variance = sum_of_variance + (variance*variance);
-        printf("\nNumber being written = %f, mean = %f, variance = %f, sum_of_variance_squared = %f\n",*(heap_max+j),mean,variance,sum_of_variance);
+        //printf("\nNumber being written = %f, mean = %f, variance = %f, sum_of_variance_squared = %f\n",*(heap_max+j),mean,variance,sum_of_variance);
 
 
         //Writing the Max element and its variance to merged_output.txt and zscore_output.txt respectively
@@ -122,12 +122,45 @@ void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, int total_chunks, int max_floats)
         
         for (int k = 0; k < total_chunks ; k++)
         { 
+            printf("\n*(heap_max+%d) = %f, *((A+%d)->root_element) = %f\n",j,*(heap_max+j),k, *((A+k)->root_element));
             if(*(heap_max+j) == *((A+k)->root_element))
             {
-                getfloat((A+k)->root_index, (A+k)->root_element);
-                *(heap_max+j) = *((A+k)->root_element);
+                getfloat((A+k)->root_index, (A+k)->root_element) ;
+                
+                if( ( !feof( (A+k)->root_index) ) )
+                    *(heap_max+j) = *((A+k)->root_element);
+                else
+                {
+                    printf("\nClosing file pointer and reducing total chunks");
+                    *(heap_max+j) = -1.0;
+                    fclose( (A+k)->root_index );
+                    j--;
+                }
+                break;
+                    
             }
         }
+        
+        /*for (int k = 0; k < total_chunks ; k++)
+        { 
+            printf("\n*(heap_max+%d) = %f, *((A+%d)->root_element) = %f\n",j,*(heap_max+j),k, *((A+k)->root_element));
+            if(*(heap_max+j) == *((A+k)->root_element))
+            {
+                getfloat((A+k)->root_index, (A+k)->root_element) ;
+                
+                if( ( !feof( (A+k)->root_index) ) )
+                    *(heap_max+j) = *((A+k)->root_element);
+                else
+                {
+                    printf("\nClosing file pointer and reducing total chunks");
+                    *(heap_max+j) = 0.0;
+                    fclose( (A+k)->root_index );
+                    total_chunks--;
+                }
+                break;
+                    
+            }
+        }*/
 
         #ifdef HEAP_DEBUG
             printf("\n Getfloat() is called and now the Heap looks like this before MAX_HEAPSORT is called again.\n");
@@ -135,7 +168,7 @@ void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, int total_chunks, int max_floats)
             printf("\n After getfloat(), value of float = %f, root_index = %p\n",*(heap_max+j),(A+j)->root_index);
         #endif // HEAP_DEBUG
 
-        if ( feof((A+j)->root_index) )
+        /*if ( feof((A+j)->root_index) )
         {
             fclose((A+j)->root_index);
             
@@ -150,7 +183,7 @@ void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, int total_chunks, int max_floats)
                 printf("\n Heap 3 (chunk decreased )\n");
                 DISPLAY_HEAP(heap_max,total_chunks);
             #endif // HEAP_DEBUG
-        }
+        }*/
     }
     
     //Standard Deviation is calculated
