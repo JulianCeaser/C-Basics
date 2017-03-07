@@ -16,14 +16,16 @@
 //#define HEAP_DEBUG
 
 //#define MAX_FLOATS_READ_IN_HEAP 256
-#define MAX_FLOATS_READ_IN_HEAP 256
+#define MAX_FLOATS_READ_IN_HEAP 5
 
 ////////////////////////////////
 //Global Variable Declaration///
 ////////////////////////////////
 
-float mean = 0.0, zscore = 0.0;
+float mean = 0.0;
+float standard_deviation = 0.0;
 float *floatList, *zscoreList;
+heapNode *Node_list;
 
 void merge(float * lst, int a, int b, int s )
 {
@@ -61,61 +63,76 @@ void mergesort(float * lst, int a, int b)
 
 void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, int total_chunks, int max_floats)
 {
-    float variance, sum_of_variance;
+    float variance=0.0, sum_of_variance=0.0;
+    float *heap_max;
      
     FILE *fp_out, *zscore_out;
     fp_out = openFile("merged_output.txt","w");
     zscore_out = openFile("variance_output.txt","w");
+    
+    #ifdef HEAP_DEBUG
+        printf("\ntotal_chunks = %d, max_floats = %d\n",total_chunks,max_floats);
+    #endif
+
+    heap_max = (float *)malloc(sizeof(float)*total_chunks);
+
+    for (int i=0;i<total_chunks;++i)
+    {
+        //getfloat((A+i)->root_index,heap_max+i);
+        *(heap_max+i) = *((A+i)->root_element);
+    }
 
     for (int i=0;i<max_floats;i++)
     {
         
-        // Build max-heap returns the highest element in  
-        //BUILD_MAX_HEAP(A, total_chunks);
-        #ifdef HEAP_DEBUG
-            printf("\n Context : i = %d, total_chunks = %d\n",i,total_chunks);
-        #endif // HEAP_DEBUG
-
-        MAX_HEAPSORT(A, total_chunks);
+        // Build max-heap returns the highest element   
         
         #ifdef HEAP_DEBUG
-            printf ("\n Iterative Display_Heap\n");
-            DISPLAY_HEAP(A,total_chunks);
+            printf("\n Context : i = %d, total_chunks = %d\n",i,total_chunks);
+            DISPLAY_HEAP(heap_max,total_chunks);
+        #endif // HEAP_DEBUG
+
+        MAX_HEAPSORT(heap_max, total_chunks);
+        
+        #ifdef HEAP_DEBUG
+            printf ("\n After Max Heapsort Display_Heap\n");
+            DISPLAY_HEAP(heap_max,total_chunks);
         #endif // HEAP_DEBUG
 
         int j = total_chunks-1;
 
-        // Build min-heap returns the highest element in  
-        //BUILD_MIN_HEAP(Node_list, total_chunks);
-    
-        //Display Heap
-        //DISPLAY_HEAP(A, total_chunks);
-    
-        //After Build Heap has returned, the first location of A ( i.e Node_list) has the hightest value
         // We start writing the highest value in the output file ( this will contain merge result of all sorted chunks )    
 
-        //for(j=0;j<num_of_floats_read;++j)
         #ifdef HEAP_DEBUG
-            printf("\n After Max_Heapsort of Node_list, total chunks = %d, Element written %f\n",total_chunks,*((A+j)->root_element));
+            printf("\n After Max_Heapsort of Node_list, total chunks = %d, Element written %f\n",total_chunks,*(heap_max+j));
         #endif // HEAP_DEBUG
 
         //Variance is calculated and sum of all variance is stored in zscore 
-        variance = *((A+j)->root_element) - mean ;
-        sum_of_variance += variance;
+        variance = *(heap_max+j) - mean ;
+        sum_of_variance = sum_of_variance + (variance*variance);
+        printf("\nNumber being written = %f, mean = %f, variance = %f, sum_of_variance_squared = %f\n",*(heap_max+j),mean,variance,sum_of_variance);
+
 
         //Writing the Max element and its variance to merged_output.txt and zscore_output.txt respectively
-        fprintf(fp_out,"%f\n",*((A+j)->root_element));
+        fprintf(fp_out,"%f\n",*(heap_max+j));
         fprintf(zscore_out,"%f\n",variance);
 
-
+        
         //Reading the next floating point number to replace the max number
-        //getfloat((A+j)->root_index, (A+j)->root_element);
-        getfloat((A+j)->root_index, (A+j)->root_element);
+        
+        for (int k = 0; k < total_chunks ; k++)
+        { 
+            if(*(heap_max+j) == *((A+k)->root_element))
+            {
+                getfloat((A+k)->root_index, (A+k)->root_element);
+                *(heap_max+j) = *((A+k)->root_element);
+            }
+        }
 
         #ifdef HEAP_DEBUG
             printf("\n Getfloat() is called and now the Heap looks like this before MAX_HEAPSORT is called again.\n");
-            DISPLAY_HEAP(A,total_chunks);
-            printf("\n After getfloat(), root_element = %f, root_index = %p\n",*((A+j)->root_element),(A+j)->root_index);
+            DISPLAY_HEAP(heap_max,total_chunks);
+            printf("\n After getfloat(), value of float = %f, root_index = %p\n",*(heap_max+j),(A+j)->root_index);
         #endif // HEAP_DEBUG
 
         if ( feof((A+j)->root_index) )
@@ -124,21 +141,22 @@ void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, int total_chunks, int max_floats)
             
             #ifdef HEAP_DEBUG
                 printf("\n Heap 2 (chunk not decreased) \n");
-                DISPLAY_HEAP(A,total_chunks);
+                DISPLAY_HEAP(heap_max,total_chunks);
             #endif // HEAP_DEBUG
 
             total_chunks--;
 
-              #ifdef HEAP_DEBUG
+            #ifdef HEAP_DEBUG
                 printf("\n Heap 3 (chunk decreased )\n");
-                DISPLAY_HEAP(A,total_chunks);
-              #endif // HEAP_DEBUG
+                DISPLAY_HEAP(heap_max,total_chunks);
+            #endif // HEAP_DEBUG
         }
     }
     
     //Standard Deviation is calculated
-    zscore = sqrt(sum_of_variance); 
-
+    standard_deviation = sqrt(sum_of_variance);
+    printf("\nSum of variance = %f, Standard Deviation = %lf",sum_of_variance,standard_deviation); 
+    free (heap_max);
     fclose(zscore_out);
 }
  
@@ -155,7 +173,7 @@ void zscore_calculator (int total_zscores)
     for(i=0;i<total_zscores;++i)
     {
         getfloat(zscore_input,zscoreList);
-        *zscoreList = *zscoreList / zscore ;
+        *zscoreList = *zscoreList / standard_deviation ;
         fprintf(zscore_output,"%f\n",*zscoreList);
     }
 
@@ -178,7 +196,7 @@ int callHeapSort (int total_chunks, int max_floats_read)
     //fp_output = openFile("merged_output.txt","w");
 
    
-    heapNode *Node_list;
+    //heapNode *Node_list;
     
     // create a dynamic array containing list of heapNode
     // size of dynamic array is set to total number of external chunks 
@@ -380,7 +398,9 @@ int main(int argc, char **argv)
 
             }while(!feof(fp));
             
-            run_size++; 
+            if ( (num_of_floats_read*run_size) == actual_nums_read )
+                run_size++; 
+
             t = clock() - t;    // Final Time
             cpu_time_used = ((double)t)/CLOCKS_PER_SEC; // Time in seconds
 

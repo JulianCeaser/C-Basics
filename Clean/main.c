@@ -13,7 +13,7 @@
 #include "heapsort.h"
 
 #define MEAN
-//#define HEAP_DEBUG
+#define HEAP_DEBUG
 
 //#define MAX_FLOATS_READ_IN_HEAP 256
 #define MAX_FLOATS_READ_IN_HEAP 256
@@ -177,18 +177,23 @@ int callHeapSort (int total_chunks, int max_floats_read)
 
     //FILE *fp_output; 
     //fp_output = openFile("merged_output.txt","w");
-
    
     heapNode *Node_list;
-    
+
     // create a dynamic array containing list of heapNode
     // size of dynamic array is set to total number of external chunks 
     Node_list = (heapNode*)malloc(sizeof(heapNode)*total_chunks);
+    //p_Nodelist = (heapNode**)malloc(sizeof(heapNode)*total_chunks);
 
     // intialize memory for root_index 
     Node_list->root_index = (FILE *)malloc(sizeof(FILE));
+    //p_Nodelist->root_index = (FILE **)malloc(sizeof(FILE));
+
     // intialize memory for root_element 
     Node_list->root_element = (float *)malloc(sizeof(float));
+    //p_Nodelist->root_element = (float **)malloc(sizeof(float));
+
+    //p_Nodelist = &Node_list;
 
     // List to maintain file descriptors for reading each external chunk
     fp_list = (FILE *)malloc(sizeof(FILE)*total_chunks);
@@ -206,7 +211,6 @@ int callHeapSort (int total_chunks, int max_floats_read)
     
         //Storing file pointer index in the Nodelist
         Node_list->root_index = fp_list;
-
 
         //Getfloat takes the filepointer fp and stores the root element into Nodelist->root_element
         //printf("\nfp_list = %p, Node_list->root_element = %p",fp_list,Node_list->root_element);

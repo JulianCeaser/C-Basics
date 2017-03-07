@@ -4,6 +4,8 @@
 #define CHUNKS 4
 #define TOTAL_FLOATS 10000
 
+#define DEBUG_ENABLED // DEBUG defines
+
 int TEST_FLAG = 0;
 
 
@@ -34,15 +36,24 @@ int RIGHT ( int i)
     //return (2*i+1);
 }  
 
-void swap (heapNode **a, heapNode **b)
+void swap (heapNode ***a, heapNode ***b)
 {
-    heapNode *c;
-    c = (heapNode *)malloc(sizeof(heapNode *));
+    printf("\n\tINSIDE FUNCTION SWAP\n");
+    printf("\n\tBefore SWAP\n");
+     
+    printf(" \nvalue of a = %p , value of b = %p\n", **a, **b);
+    
+    heapNode **c;
 
-    c = a;
-    a = b;
-    b = c;
-}
+    c = *a;
+    *a = *b;
+    *b = c;
+    
+    printf("\n\tAfter SWAP\n");
+    printf(" \nvalue of a = %p , value of b = %p\n", **a, **b);
+    //printf(" \nvalue of *p+i = %p , value of *p+largest_index = %p, address of A = %p\n", *a, *b);
+
+}    
 
 /*void swap ( heapNode **pnode1, struct heapNode **pnode1 )
 {
@@ -108,16 +119,16 @@ void swap (heapNode **a, heapNode **b)
 
 void DISPLAY_HEAP(heapNode *A, int len)
 {
-    //#ifdef DEBUG_ENABLED
+    #ifdef DEBUG_ENABLED
         printf ("Inside DISPLAY_HEAP\n");
-    //#endif
+    #endif
     
     for (int i = 0; i < len; i++)
         printf("Inside A[%d] - root index = %p, root_element is  = %f\n",i, (A+i)->root_index ,*((A+i)->root_element));
     
-    //#ifdef DEBUG_ENABLED
+    #ifdef DEBUG_ENABLED
         printf ("Exiting DISPLAY_HEAP\n");
-    //#endif
+    #endif
 
 }
 /*
@@ -228,18 +239,49 @@ void MAX_HEAPIFY (heapNode *A, int index, int len)
         //swap ( (A+i)->root_element, (A+largest_index)->root_element, (A+i)->root_index, (A+largest_index)->root_index );
         //swap ( &(A+i), &(A+largest_index) );
         
-        heapNode *pa, *pb;
-        pa = (heapNode *)malloc(sizeof(heapNode *));
-        pb = (heapNode *)malloc(sizeof(heapNode *));
+        heapNode **p1,**p2;
+        //heapNode ***p3,***p4;
 
-        pa = &A[i];
-        pb = &A[largest_index];
-    
-        printf("\n Before swapping MAX_HEAPIFY pa = %p\t pb = %p", *pa, *pb);
+        A = A+i;
+        p1 = &A;
+        A = A-i;
+        A = A+largest_index;
+        p2 = &A;
+        A = A-largest_index;
+
+        //p3 = &p1;
+        //p4 = &p2;
+        //printf(" \nvalue of p = %p , value of A = %p, address of A = %p\n", p, A, &A);
+        //printf(" \nvalue of element address accessed via p = %p , value of address of element via A = %p\n", ((*p)->root_element), A->root_element);
+        //printf(" \nvalue of element address accessed via *p + %d = %p , value of address of element via A+%d = %p",i+1,((*p+1)->root_element),i+1, (A+1)->root_element);
+        //printf(" \nvalue of element access via p = %f , value of element via A = %f", *((*p)->root_element), *A->root_element);
+        //printf(" value of i-th element access via p = %f , value of i-th element via A = %f", ((**p+i)->root_element), (*A+i)->root_element);
+        //printf("\n\n&A = %p, &A[i], = %p, &A[largest_index] = %p\n",&A,&A[i],&(A[largest_index]));
+        //printf("\np=&A assigned. p = %p, p+i = %p, p+largest_index = %p\n",*p,*(p+i),*(p+largest_index));
+        //*(p+i),*(p+largest_index);
         
-        swap (&pa,&pb);
 
-        printf("\n After swapping MAX_HEAPIFY pa = %p\t pb = %p", *pa, *pb);
+        #ifdef DEBUG_ENABLED
+            //printf("\n Before swapping MAX_HEAPIFY p+%d = %p\t p+%d = %p\n",i, (*p+i),largest_index, (*p+largest_index));
+            //printf(" \nvalue of p = %p , value of A = %p, address of A = %p\n", p, A, &A);
+            //printf(" \nvalue of element address accessed via p = %p , value of address of element via A = %p\n", ((*p)->root_element), A->root_element);
+            //printf(" \nvalue of element address accessed via *p + %d = %p , value of address of element via A+%d = %p",i+1,((*p+1)->root_element),i+1, (A+1)->root_element);
+            //printf(" \nvalue of element access via p = %f , value of element via A = %f", *((*p)->root_element), *A->root_element);
+            printf("\n\n\nBefore swapping, value of p1 = %p, p2 = %p, &A[i] = %p, &A[largest_index] = %p\n\n\n",p1,p2,&A[i],&A[largest_index]);
+        #endif // DEBUG_ENABLED
+
+        //swap (&(p+i),&(p+largest_index));
+        swap(&p1,&p2);
+
+        #ifdef DEBUG_ENABLED
+            //printf("\n After swapping MAX_HEAPIFY p+%d = %p\t p+%d = %p\n",i, (*p+i),largest_index, (*p+largest_index));
+            //printf(" \nvalue of p = %p , value of A = %p, address of A = %p\n", p, A, &A);
+            //printf(" \nvalue of element address accessed via p = %p , value of address of element via A = %p\n", ((*p)->root_element), A->root_element);
+            //printf(" \nvalue of element address accessed via *p + %d = %p , value of address of element via A+%d = %p",i+1,((*p+1)->root_element),i+1, (A+1)->root_element);
+            //printf(" \nvalue of element access via p = %f , value of element via A = %f", *((*p)->root_element), *A->root_element);
+            //printf("\n After swapping MAX_HEAPIFY pa = %p\t pb = %p", *(p+i), *(p+largest_index));
+            printf("\n\n\nAfter swapping, value of p1 = %p, p2 = %p, &A[i] = %p, &A[largest_index] = %p\n\n\n",p1,p2,&A[i],&A[largest_index]);
+        #endif // DEBUG_ENABLED
 
        /* 
         heapNode *pa, *pb;
@@ -376,23 +418,33 @@ void MAX_HEAPSORT (heapNode *A, int len)
             printf("Pointer to (A) = %p (A+i)= %p \n", (A), (A+i));       
         #endif
 
-       // swap ( &A, &(A+i) );
+       // swap ( &(A+0), &(A+i) );
         //swap( (A->root_element), ((A+i)->root_element), (A->root_index), ((A+i)->root_index));
 //      swap(((A)->root_element),((A+i)->root_element));
 //      swap_FP(((A)->root_index),((A+i)->root_index));
         
-        heapNode *pa, *pb;
-        pa = (heapNode *)malloc(sizeof(heapNode *));
-        pb = (heapNode *)malloc(sizeof(heapNode *));
+        heapNode **p1,**p2;
+        //heapNode ***p3,***p4;
 
-        pa = &A;
-        pb = &A[i];
-    
-        printf("\n Before swapping MAX_HEAPSORT. pa = %p\t pb = %p", *pa, *pb);
+        p1 = &A;
+        A = A+i;
+        p2 = &A;
+        A = A-i;
+
+        //p3 = &p1;
+        //p4 = &p2;
+
+        #ifdef DEBUG_ENABLED 
+            printf("\n\n\nBefore swapping, value of p1 = %p, p2 = %p, &A = %p, &A[i] = %p\n\n\n",p1,p2,&A,&A[i]);
+        #endif // DEBUG_ENABLED
         
-        swap (&pa,&pb);
+        //swap(&(p+0),&(p+i));
+        swap (&p1,&p2);
 
-        printf("\n After swapping MAX_HEAPSORT. pa = %p\t pb = %p", *pa, *pb);
+        #ifdef DEBUG_ENABLED
+            printf("\n\n\nAfter swapping, value of p1 = %p, p2 = %p, &A = %p, &A[i] = %p\n\n\n",p1,p2,&A,&A[i]);
+            //printf("\n After swapping MAX_HEAPSORT. pa = %p", *p);
+        #endif //DEBUG_ENABLED
 
         len = len -1;
          
@@ -404,6 +456,7 @@ void MAX_HEAPSORT (heapNode *A, int len)
         DISPLAY_HEAP(A, len);
     #endif
 }
+
 /*
 void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, FILE *fp_out, int total_chunks, int max_floats)
 {

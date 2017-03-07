@@ -16,7 +16,8 @@
 //#define HEAP_DEBUG
 
 //#define MAX_FLOATS_READ_IN_HEAP 256
-#define MAX_FLOATS_READ_IN_HEAP 2500
+//#define MAX_FLOATS_READ_IN_HEAP 2500
+#define MAX_FLOATS_READ_IN_HEAP 1000000
 
 ////////////////////////////////
 //Global Variable Declaration///
@@ -27,6 +28,7 @@ float standard_deviation = 0.0;
 float *floatList, *zscoreList;
 heapNode *Node_list;
 
+/*
 void merge(float * lst, int a, int b, int s )
 {
     float tmp[s];
@@ -59,6 +61,78 @@ void mergesort(float * lst, int a, int b)
      mergesort(lst, a, a + (b-a)/2);
      mergesort(lst, a + (b-a)/2, b);
      merge(lst, a, a + (b-a)/2, b);
+}
+
+*/
+
+void merge(float lst[], int l, int m, int r)
+{
+    int i, j, k;
+    int n1 = m - l + 1;
+    int n2 = r - m;
+
+    //Create temp arrays
+    //float *L, *R;
+    //L = (float *)malloc(sizeof(float) * n1);
+    //R = (float *)malloc(sizeof(float) * n2);
+    float L[n1], R[n2];
+
+    // Copy data to temp arrays L and R
+    for(i = 0; i < n1; i++)
+        L[i] = lst[l + i];
+    for(j = 0; j < n2; j++)
+        R[j] = lst[m + 1 + j];
+
+    //Merge temp arrays back in lst
+    i = 0; // Initial index of first subarray
+    j = 0; // Initial index of second subarray
+    k = l; // Initial index of merged subarray
+    while (i < n1 && j < n2)
+    {
+        if (L[i] <= R[j])
+            lst[k++] = L[i++];
+        else
+            lst[k++] = R[j++];
+    }
+ 
+    /* Copy the remaining elements of L[], if there
+       are any */
+    while (i < n1)
+        lst[k++] = L[i++];
+ 
+    /* Copy the remaining elements of R[], if there
+       are any */
+    while(j < n2)
+        lst[k++] = R[j++];
+
+    //printf("\n\nMerge complete\n\n");
+    
+    //free(L);
+    //free(R);    
+}
+
+void mergesort (float lst[], int l, int r)
+{
+    if (l<r)
+    {
+        //Same as (l+r)/2, but avoids oveflow
+        //for large l and r
+        int m = l + (r - l) / 2;
+        printf("\nl = %d, m = %d, r = %d",l,m,r);
+
+        //Sort first and second halves
+        mergesort (lst, l, m);
+        //printf("\nMergesort first half complete.");
+        printf("\nl = %d, m = %d",l,m);
+        mergesort (lst, m+1, r);
+        //printf("\nMergesort second half complete");
+        printf("\nm+1 = %d, r = %d",m+1,r);
+
+        merge(lst, l, m, r);
+        //printf("\nMerge both halves complete");
+        printf("\nl = %d, m = %d, r = %d",l,m,r);
+    }
+
 }
 
 void SORT_HEAP_AND_WRITE_OUTPUT (heapNode *A, int total_chunks, int max_floats)
@@ -322,8 +396,7 @@ int main(int argc, char **argv)
             printf(" ----------------------------------");
             //
             //n = BUFFSIZE/sizeof(float) 
-            floatList = (float *)malloc(sizeof(float)*MAX_FLOATS_READ_IN_HEAP );
-            //printf("floatList pointer address : = %p, size allocated = %d", floatList, (int)sizeof(floatList));
+            floatList = (float *)malloc(sizeof(float)*MAX_FLOATS_READ_IN_HEAP);
  
             num_of_floats_read = 0, run_size = 0, actual_nums_read = 0 ; 
     
@@ -333,7 +406,43 @@ int main(int argc, char **argv)
 
             printf("\n Mergesort started. Creating and writing to disk temporary chunks\n");
 
-            do  
+            int more_input = 1;
+
+            while(more_input)
+            {
+                for(i = 0; i<MAX_FLOATS_READ_IN_HEAP; i++)
+                {
+                    getfloat(fp, (floatList+num_of_floats_read));
+                    if ( feof(fp) )
+                    {
+                        more_input = 0;
+                        break;
+                    }
+                    
+                    mean += *(floatList+num_of_floats_read);
+                    ++num_of_floats_read;
+                }
+                printf("\nMergesort started - Input while loop running number %d\n",run_size);
+                mergesort(floatList, 0, i-1);
+                printf("\nMergesort end - Input while loop running number %d\n",run_size);
+
+                sprintf(temp_output,"temp%d.dat",run_size);
+                fp1 = openFile(temp_output,"w");
+
+                for (j=0; j<i; ++j)
+                    fprintf(fp1,"%f\n",*(floatList+j));
+
+                actual_nums_read += num_of_floats_read;
+                run_size++;
+                
+            }
+
+            for (i = 0; i<run_size; ++i)
+                fclose(fp1);
+
+            fclose(fp);
+
+/*            do  
             {   
                 getfloat(fp,(floatList+num_of_floats_read));     // Get each floating point number from input file
                 if( feof(fp) )
@@ -341,9 +450,10 @@ int main(int argc, char **argv)
                 
                 mean += *(floatList+num_of_floats_read);
                 ++num_of_floats_read ;
-//#ifdef MEAN
-//                printf("\nSum of floating point inputs = %f",mean);
-//#endif // MEAN
+                
+                #ifdef MEAN
+                    printf("\nSum of floating point inputs = %f",mean);
+                #endif // MEAN
     
 
                 //If Buffer is filled then write out to temp files
@@ -369,7 +479,7 @@ int main(int argc, char **argv)
                         t1 = clock() - t1; 
                         cpu_time_used = ((double)t1)/CLOCKS_PER_SEC; // Time in seconds
                         printf("\nMergesort for chunk %d complete. Time taken is %lf \n",run_size,cpu_time_used);
-                    #endif /* TIMER */
+                    #endif // TIMER 
                     run_size++;
                     fclose(fp1);
                     continue;
@@ -390,14 +500,14 @@ int main(int argc, char **argv)
                     t1 = clock() - t1;
                     cpu_time_used = ((double)t1)/CLOCKS_PER_SEC; // Time in seconds
                     printf("\nMergesort for chunk %d complete. Time taken is %lf\n",run_size,cpu_time_used);
-                #endif /* TIMER */
+                #endif  TIMER 
                 
                 fclose(fp1);
 
-            }while(!feof(fp));
+            }while(!feof(fp)); */
             
-            if ( (num_of_floats_read*run_size) == actual_nums_read )
-                run_size++; 
+            //if ( (num_of_floats_read*run_size) == actual_nums_read )
+            //    run_size++; 
 
             t = clock() - t;    // Final Time
             cpu_time_used = ((double)t)/CLOCKS_PER_SEC; // Time in seconds
@@ -406,7 +516,7 @@ int main(int argc, char **argv)
             printf("\n Total Time Taken to generate sorted chunks using Merge Sort is %lf secs\n",cpu_time_used);
 
             actual_nums_read +=num_of_floats_read;
-            fclose(fp);
+            //fclose(fp);
 
             mean = mean/actual_nums_read;
 
@@ -440,6 +550,7 @@ int main(int argc, char **argv)
 
     }
 
+        
     return 0;
 }
 

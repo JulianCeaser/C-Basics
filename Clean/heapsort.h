@@ -27,7 +27,7 @@ int LEFT ( int i);
 int RIGHT ( int i);
 
 
-void swap ( heapNode **, heapNode ** );
+void swap ( heapNode ***, heapNode *** );
 //void swap ( float *px, float *py, FILE *fp1, FILE *fp2 );
 
 //void swap_FP ( FILE *px, FILE *py);
