@@ -58,7 +58,7 @@ def notice_printer(filename):
                 break
         except RuntimeError:
             counter -= 1
-            time.sleep(0.05)
+            time.sleep(0.5)
 
 
 def extension_pdf(filename):
