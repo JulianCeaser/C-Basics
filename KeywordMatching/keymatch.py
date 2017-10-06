@@ -1,12 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import fcntl
 import glob
+import json
 import os
 import shutil
 import sys
 import tarfile
+import time
 import zipfile
+from collections import OrderedDict
 from subprocess import Popen, PIPE, call
 
 import rarfile
@@ -23,23 +27,37 @@ keys = set(f.read().split())
 # Get filename, path, source ip and destination ip from arguments
 filename = sys.argv[1]
 filepath = sys.argv[2]
-srcip = sys.argv[3]
-dstip = sys.argv[4]
 
-fname = os.path.basename(filepath)
-fext = os.path.splitext(filepath)[1]
+data = OrderedDict()
+
+data['id.orig_h'] = sys.argv[3]
+data['id.orig_p'] = sys.argv[4]
+data['id.resp_h'] = sys.argv[5]
+data['id.resp_p'] = sys.argv[6]
+data['msg'] = 'Keyword matched in file having path %s' % filepath
+data['note'] = 'KeywordMatch::Matched'
+
+#fname = os.path.basename(filepath)
+fext = os.path.splitext(data['filename'])[1]
 
 # Global variables
 plaintext_extensions = ['.txt', '.doc', '.html', 'htm', 'rtf', 'xml', 'xls', 'json']
 FNULL = open(os.devnull, 'w')
 
 
+
 def notice_printer(filename):
-    with open(noticelog, 'a') as the_file:
-        the_file.write(
-            '{"id.orig_h":"%s","id.orig_p":"%s","id.resp_h":"%s","id.resp_p":"%s",'
-            '"msg":"Keyword matched in file %s having path %s","note":"KeywordMatch::Matched"}\n'
-            % (sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], filename, filepath))
+    counter = 100
+    while counter:
+        try:
+            with open(noticelog, 'a') as the_file:
+                fcntl.flock(the_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                the_file.write(json.dumps(data))
+                fcntl.flock(the_file, fcntl.LOCK_UN)
+                break
+        except RuntimeError:
+            counter -= 1
+            time.sleep(0.05)
 
 
 def extension_pdf(filename):
@@ -155,19 +173,20 @@ def extension_rar(filename):
     if os.path.isdir('rar'):
         shutil.rmtree('rar')
 
+
 def main():
     os.chdir(filelocation)
-    if fext.lower() == '.pdf':
+    if filename.endswith('.pdf'):
         extension_pdf(filename)
-    elif fext.lower() == '.docx':
+    elif filename.endswith('.docx'):
         extension_docx(filename)
-    elif fname.endswith('gz'):
+    elif filename.endswith('.gz'):
         extension_targz(filename)
-    elif fext.lower() == '.tar':
+    elif filename.endswith('.tar'):
         extension_tar(filename)
-    elif fname.endswith('zip'):
+    elif filename.endswith('.zip'):
         extension_zip(filename)
-    elif fname.endswith('rar'):
+    elif filename.endswith('.rar'):
         extension_rar(filename)
     elif fext.lower() in plaintext_extensions:
         extension_txt(filename)
