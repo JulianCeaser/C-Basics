@@ -38,7 +38,7 @@ data['msg'] = 'Keyword matched in file having path %s' % filepath
 data['note'] = 'KeywordMatch::Matched'
 
 #fname = os.path.basename(filepath)
-fext = os.path.splitext(data['filename'])[1]
+fext = os.path.splitext(filename)[1]
 
 # Global variables
 plaintext_extensions = ['.txt', '.doc', '.html', 'htm', 'rtf', 'xml', 'xls', 'json']
@@ -52,7 +52,8 @@ def notice_printer(filename):
         try:
             with open(noticelog, 'a') as the_file:
                 fcntl.flock(the_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                the_file.write(json.dumps(data))
+                json.dump(data, the_file, separators=(',', ':'))
+                the_file.write('\n')
                 fcntl.flock(the_file, fcntl.LOCK_UN)
                 break
         except RuntimeError:
