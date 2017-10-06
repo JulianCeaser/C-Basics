@@ -41,9 +41,10 @@ data['note'] = 'KeywordMatch::Matched'
 fext = os.path.splitext(filename)[1]
 
 # Global variables
+complex_extension = [ '.pdf', '.docx' ]
 plaintext_extensions = ['.txt', '.doc', '.html', 'htm', 'rtf', 'xml', 'xls', 'json']
+complete_extensions = complex_extension + plaintext_extensions
 FNULL = open(os.devnull, 'w')
-
 
 
 def notice_printer(filename):
@@ -70,7 +71,7 @@ def extension_pdf(filename):
         if pdf_res == 0:
             notice_printer(filename)
             break
-        os.remove(new_fn)
+    os.remove(new_fn)
 
 
 def extension_docx(filename):
@@ -92,7 +93,7 @@ def extension_txt(filename):
 def extension_tar(filename):
     tar = tarfile.open(filename)
     for member in tar.getmembers():
-        if os.path.splitext(member.name)[1] in plaintext_extensions:
+        if os.path.splitext(member.name)[1] in complete_extensions:
             tar.extract(member, path='tar')
     tar.close()
     ext_tar = glob.glob("tar/*")
@@ -114,7 +115,7 @@ def extension_tar(filename):
 def extension_targz(filename):
     targz = tarfile.open(filename, 'r:gz')
     for member in targz.getmembers():
-        if os.path.splitext(member.name)[1] in plaintext_extensions:
+        if os.path.splitext(member.name)[1] in complete_extensions:
             targz.extract(member, path='gz')
     targz.close()
     ext_targz = glob.glob("gz/*")
@@ -136,7 +137,7 @@ def extension_targz(filename):
 def extension_zip(filename):
     zip_file = zipfile.ZipFile(filename, 'r')
     for member in zip_file.namelist():
-        if os.path.splitext(member)[1] in plaintext_extensions:
+        if os.path.splitext(member)[1] in complete_extensions:
             zip_file.extract(member, path='zip')
     ext_zip = glob.glob("zip/*")
     for files in ext_zip:
@@ -157,7 +158,7 @@ def extension_zip(filename):
 def extension_rar(filename):
     rar_file = rarfile.RarFile(filename)
     for member in rar_file.namelist():
-        if os.path.splitext(member)[1] in plaintext_extensions:
+        if os.path.splitext(member)[1] in complete_extensions:
             rar_file.extract(member, path='rar')
     ext_rar = glob.glob("rar/*")
     for files in ext_rar:
