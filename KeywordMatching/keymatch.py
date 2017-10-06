@@ -10,10 +10,10 @@ import sys
 import tarfile
 import time
 import zipfile
+import rarfile
 from collections import OrderedDict
 from subprocess import Popen, PIPE, call
 
-import rarfile
 
 # Bro Locations
 noticelog = '/usr/local/seceon/bro/logs/current/notice.log'
