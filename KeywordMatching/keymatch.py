@@ -3,7 +3,6 @@
 
 import glob
 import os
-import os.path
 import shutil
 import sys
 import tarfile
@@ -12,8 +11,13 @@ from subprocess import Popen, PIPE, call
 
 import rarfile
 
+# Bro Locations
+noticelog = '/usr/local/seceon/bro/logs/current/notice.log'
+keywords = '/usr/local/seceon/bro/share/bro/site/file-extraction/kwlist.txt'
+filelocation = '/usr/local/seceon/bro/logs/current/extract_files'
+
 # Get all keywords to be found
-f = open('/home/vikram/Downloads/keys.txt', 'r')
+f = open(keywords, 'r')
 keys = set(f.read().split())
 
 # Get filename, path, source ip and destination ip from arguments
@@ -24,8 +28,6 @@ dstip = sys.argv[4]
 
 fname = os.path.basename(filepath)
 fext = os.path.splitext(filepath)[1]
-#filename = sys.argv[1]
-# print filename, fname, fext
 
 # Global variables
 plaintext_extensions = ['.txt', '.doc', '.html', 'htm', 'rtf', 'xml', 'xls', 'json']
@@ -33,12 +35,11 @@ FNULL = open(os.devnull, 'w')
 
 
 def notice_printer(filename):
-    with open('/home/vikram/PycharmProjects/C-Basics/KeywordMatching/somefile.txt', 'a') as the_file:
+    with open(noticelog, 'a') as the_file:
         the_file.write(
             '{"id.orig_h":"%s","id.orig_p":"%s","id.resp_h":"%s","id.resp_p":"%s",'
-            '"msg":"Keyword matched in file %s having path %s","note":"KeywordMatch::Matched"}'
+            '"msg":"Keyword matched in file %s having path %s","note":"KeywordMatch::Matched"}\n'
             % (sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], filename, filepath))
-    return
 
 
 def extension_pdf(filename):
@@ -50,6 +51,7 @@ def extension_pdf(filename):
         if pdf_res == 0:
             notice_printer(filename)
             break
+        os.remove(new_fn)
 
 
 def extension_docx(filename):
@@ -70,10 +72,9 @@ def extension_txt(filename):
 
 def extension_tar(filename):
     tar = tarfile.open(filename)
-    tar_gz = tarfile.open(fname, 'r')
-    for member in tar_gz.getmembers():
+    for member in tar.getmembers():
         if os.path.splitext(member.name)[1] in plaintext_extensions:
-            tar_gz.extract(member, path='tar')
+            tar.extract(member, path='tar')
     tar.close()
     ext_tar = glob.glob("tar/*")
     for files in ext_tar:
@@ -87,28 +88,30 @@ def extension_tar(filename):
         if fext_tar.lower() in plaintext_extensions:
             extension_txt(fn_tar)
         os.chdir('..')
-    shutil.rmtree('tar')
+    if os.path.isdir('tar'):
+        shutil.rmtree('tar')
 
 
 def extension_targz(filename):
-    tar = tarfile.open(filename, 'r:gz')
-    for member in tar.getmembers():
+    targz = tarfile.open(filename, 'r:gz')
+    for member in targz.getmembers():
         if os.path.splitext(member.name)[1] in plaintext_extensions:
-            tar.extract(member, path='gz')
-    tar.close()
-    ext_tar = glob.glob("gz/*")
-    for files in ext_tar:
-        fn_tar = os.path.basename(files)
-        fext_tar = os.path.splitext(files)[1]
+            targz.extract(member, path='gz')
+    targz.close()
+    ext_targz = glob.glob("gz/*")
+    for files in ext_targz:
+        fn_targz = os.path.basename(files)
+        fext_targz = os.path.splitext(files)[1]
         os.chdir('gz')
-        if fext_tar.lower() == '.pdf':
-            extension_pdf(fn_tar)
-        if fext_tar.lower() == '.docx':
-            extension_docx(fn_tar)
-        if fext_tar.lower() in plaintext_extensions:
-            extension_txt(fn_tar)
+        if fext_targz.lower() == '.pdf':
+            extension_pdf(fn_targz)
+        if fext_targz.lower() == '.docx':
+            extension_docx(fn_targz)
+        if fext_targz.lower() in plaintext_extensions:
+            extension_txt(fn_targz)
         os.chdir('..')
-    shutil.rmtree('gz')
+    if os.path.isdir('gz'):
+        shutil.rmtree('gz')
 
 
 def extension_zip(filename):
@@ -128,8 +131,8 @@ def extension_zip(filename):
         if fext_zip.lower() in plaintext_extensions:
             extension_txt(fn_zip)
         os.chdir('..')
-    shutil.rmtree('zip')
-    return
+    if os.path.isdir('zip'):
+        shutil.rmtree('zip')
 
 
 def extension_rar(filename):
@@ -149,23 +152,27 @@ def extension_rar(filename):
         if fext_rar.lower() in plaintext_extensions:
             extension_txt(fn_rar)
         os.chdir('..')
-    shutil.rmtree('rar')
-    return
+    if os.path.isdir('rar'):
+        shutil.rmtree('rar')
+
+def main():
+    os.chdir(filelocation)
+    if fext.lower() == '.pdf':
+        extension_pdf(filename)
+    elif fext.lower() == '.docx':
+        extension_docx(filename)
+    elif fname.endswith('gz'):
+        extension_targz(filename)
+    elif fext.lower() == '.tar':
+        extension_tar(filename)
+    elif fname.endswith('zip'):
+        extension_zip(filename)
+    elif fname.endswith('rar'):
+        extension_rar(filename)
+    elif fext.lower() in plaintext_extensions:
+        extension_txt(filename)
+    os.remove(filename)
 
 
-os.chdir('extract_files')
-if fext.lower() == '.pdf':
-    extension_pdf(filename)
-elif fext.lower() == '.docx':
-    extension_docx(filename)
-elif fname.endswith('tar.gz'):
-    extension_targz(filename)
-elif fext.lower() == '.tar':
-    extension_tar(filename)
-elif fname.endswith('zip'):
-    extension_zip(filename)
-elif fname.endswith('rar'):
-    extension_rar(filename)
-elif fext.lower() in plaintext_extensions:
-    extension_txt(filename)
-os.chdir('..')
+if __name__ == '__main__':
+    main()
